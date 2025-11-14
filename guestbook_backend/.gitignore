@@ -1,0 +1,57 @@
+# ==================================
+# 민감한 설정 파일 (DB 비밀번호 등)
+# ==================================
+application-local.properties
+application-dev.properties
+application-prod.properties
+*.yml
+
+# ==================================
+# 빌드 결과물 (컴파일된 파일)
+# ==================================
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ==================================
+# Maven Wrapper
+# ==================================
+.mvn/wrapper/maven-wrapper.jar
+
+# ==================================
+# 기타 로그 및 시스템 파일
+# ==================================
+HELP.md
+*.log
+
+# ==================================
+# IDE (개발 도구) 설정 파일
+# ==================================
+
+### STS / Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
