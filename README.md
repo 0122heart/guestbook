@@ -6,10 +6,9 @@
 3. db설계 공부
 
 # documents
-
-[프로젝트 기획](docs/PROTOTYPE.md)
-[프로젝트 진행 과정](docs/PROGRESS.md)
-[API 명세](docs/API.md)
+- [프로젝트 기획](docs/PROTOTYPE.md)
+- [프로젝트 진행 과정](docs/PROGRESS.md)
+- [API 명세](docs/API.md)
 
 # 기술 스택
 * **Backend:** Spring Boot, Spring Security, JPA
