@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class SignInDto {
     // 아이디
-    private String userId;
+    private String loginId;
 
     // 비밀번호
     private String password;

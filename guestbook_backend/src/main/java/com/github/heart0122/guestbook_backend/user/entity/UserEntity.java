@@ -1,13 +1,13 @@
 package com.github.heart0122.guestbook_backend.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Table(name = "users")
 public class UserEntity {
     // 회원 번호
@@ -22,6 +22,10 @@ public class UserEntity {
     // 회원 비밀번호(not null)
     @Column(name = "password",nullable = false)
     private String password;
+
+    // 회원 이메일
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     // 회원 닉네임
     @Column(name = "nickname",unique = true, nullable = true, length = 10)

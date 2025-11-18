@@ -1,5 +1,6 @@
-package com.github.heart0122.guestbook_backend.user.entity;
+package com.github.heart0122.guestbook_backend.friend.entity;
 
+import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,18 +22,15 @@ public class FriendListEntity {
     @Column(name = "relation_id") // DB 컬럼명과 일치시킴
     private Long relationId;
 
-
     // 사람 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-
     // 사람 2
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id", nullable = false)
     private UserEntity friend;
-
 
     // 친구 맺은 날짜
     @CreatedDate

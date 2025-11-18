@@ -1,5 +1,6 @@
-package com.github.heart0122.guestbook_backend.user.entity;
+package com.github.heart0122.guestbook_backend.friend.entity;
 
+import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
