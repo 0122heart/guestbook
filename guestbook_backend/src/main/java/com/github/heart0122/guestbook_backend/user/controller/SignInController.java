@@ -6,16 +6,15 @@ import com.github.heart0122.guestbook_backend.user.service.SignInService;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Data
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 public class SignInController {
     private final SignInService signInService;
 
-    @GetMapping("/sign/in")
+    @PostMapping("/sign/in")
     public ResponseEntity<UserEntity> SignIn(@RequestBody SignInDto signInDto){
         // SignInService에 입력된 아이디, 비밀번호 보내서 일치하면 OK
         if(signInService.signIn(signInDto)) return new ResponseEntity<>(HttpStatus.OK);

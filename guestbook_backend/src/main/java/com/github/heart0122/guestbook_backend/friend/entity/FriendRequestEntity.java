@@ -2,9 +2,7 @@ package com.github.heart0122.guestbook_backend.friend.entity;
 
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,6 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Table(name = "friend_request")
 @EntityListeners(AuditingEntityListener.class) // created_at 자동화를 위해
 public class FriendRequestEntity {
