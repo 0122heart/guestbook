@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Builder
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "guestbook")
 @EntityListeners(AuditingEntityListener.class) // created_at 자동화를 위해
 public class GuestbookEntity {

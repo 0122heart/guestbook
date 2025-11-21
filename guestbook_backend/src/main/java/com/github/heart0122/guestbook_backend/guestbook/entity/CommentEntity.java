@@ -34,7 +34,7 @@ public class CommentEntity {
 
     // 댓글 내용
     @Column(columnDefinition = "TEXT", name = "comment", nullable = false)
-    private String comment;
+    private String content;
 
     // 댓글 작성 시간
     @CreatedDate

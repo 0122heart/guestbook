@@ -2,6 +2,7 @@ package com.github.heart0122.guestbook_backend.friend.service;
 
 import com.github.heart0122.guestbook_backend.friend.dto.FriendDto;
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
+import com.github.heart0122.guestbook_backend.friend.entity.FriendRequestEntity;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendRequestRepository;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
@@ -19,10 +20,13 @@ public class FriendAcceptanceService {
     private UserRepository userRepository;
 
     public boolean acceptOrReject(boolean accept, FriendDto friendDto) {
-        Long requestId = friendRequestRepository.findFriendRequestIdBySenderAndReceiver(friendDto.getSender(), friendDto.getReceiver());
+        UserEntity sender = userRepository.findByNickname(friendDto.getSender());
+        UserEntity receiver = userRepository.findByNickname(friendDto.getReceiver());
+        FriendRequestEntity request = friendRequestRepository.findFriendRequestIdBySenderAndReceiver(sender, receiver);
+        Long requestId = request.getRequestId();
 
         // 친구 요청을 승인하든 거절하든 요청 객체는 삭제됨
-        friendRequestRepository.deleteById(requestId);
+        friendRequestRepository.deleteFriendRequestByRequestId(requestId);
 
         if (accept) {
             UserEntity user1 = userRepository.findByNickname(friendDto.getSender());

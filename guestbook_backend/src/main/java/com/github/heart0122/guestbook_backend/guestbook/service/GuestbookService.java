@@ -1,5 +1,7 @@
 package com.github.heart0122.guestbook_backend.guestbook.service;
 
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookListDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
@@ -58,19 +60,29 @@ public class GuestbookService {
         }
     }
 
-    public List<GuestbookPostDto> read(String userNickname) {
+    public List<GuestbookListDto> read(String userNickname) {
         UserEntity userEntity = userRepository.findByNickname(userNickname);
-        List<GuestbookPostDto> guestbookPostDtos = new ArrayList<>();
-        for(var ue : guestbookRepository.readByOwnerId(userEntity.getUserId())){
-            GuestbookPostDto guestbookPostDto = new GuestbookPostDto();
-            guestbookPostDto.setId(ue.getGuestbookId());
-            guestbookPostDto.setOwnerNickname(userEntity.getNickname());
-            guestbookPostDto.setGuestNickname(ue.getGuest().getNickname());
-            guestbookPostDto.setTitle(ue.getTitle());
-            guestbookPostDto.setContent(ue.getContent());
-            guestbookPostDto.setCreatedAt(ue.getCreatedAt());
-            guestbookPostDtos.add(guestbookPostDto);
+        List<GuestbookListDto> guestbookListDtos = new ArrayList<>();
+        for(var ue : guestbookRepository.findGuestbookEntitiesByOwner(
+                userRepository.findByUserId(userEntity.getUserId()))){
+            GuestbookListDto guestbookListDto = new GuestbookListDto();
+            guestbookListDto.setId(ue.getGuestbookId());
+            guestbookListDto.setOwnerNickname(userEntity.getNickname());
+            guestbookListDto.setGuestNickname(ue.getGuest().getNickname());
+            guestbookListDto.setTitle(ue.getTitle());
+            guestbookListDto.setContent(ue.getContent());
+            guestbookListDto.setCreatedAt(ue.getCreatedAt());
+            guestbookListDto.setComments(new ArrayList<>());
+            for(var c : ue.getComments()){
+                GuestbookCommentDto guestbookCommentDto = new GuestbookCommentDto();
+                guestbookCommentDto.setCommentId(c.getCommentId());
+                guestbookCommentDto.setUserNickname(c.getUser().getNickname());
+                guestbookCommentDto.setContent(c.getContent());
+                guestbookCommentDto.setCreatedAt(c.getCreatedAt());
+                guestbookListDto.getComments().add(guestbookCommentDto);
+                guestbookListDtos.add(guestbookListDto);
+            }
         }
-        return guestbookPostDtos;
+        return guestbookListDtos;
     }
 }

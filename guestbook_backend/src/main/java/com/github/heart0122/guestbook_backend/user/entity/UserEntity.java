@@ -23,10 +23,6 @@ public class UserEntity {
     @Column(name = "password",nullable = false)
     private String password;
 
-    // 회원 이메일
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
-
     // 회원 닉네임
     @Column(name = "nickname",unique = true, nullable = true, length = 10)
     private String nickname;
