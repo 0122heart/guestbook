@@ -9,6 +9,7 @@ import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -57,8 +58,19 @@ public class GuestbookService {
         }
     }
 
-    public List<GuestbookEntity> read(String userNickname) {
+    public List<GuestbookPostDto> read(String userNickname) {
         UserEntity userEntity = userRepository.findByNickname(userNickname);
-        return guestbookRepository.readByOwnerId(userEntity.getUserId());
+        List<GuestbookPostDto> guestbookPostDtos = new ArrayList<>();
+        for(var ue : guestbookRepository.readByOwnerId(userEntity.getUserId())){
+            GuestbookPostDto guestbookPostDto = new GuestbookPostDto();
+            guestbookPostDto.setId(ue.getGuestbookId());
+            guestbookPostDto.setOwnerNickname(userEntity.getNickname());
+            guestbookPostDto.setGuestNickname(ue.getGuest().getNickname());
+            guestbookPostDto.setTitle(ue.getTitle());
+            guestbookPostDto.setContent(ue.getContent());
+            guestbookPostDto.setCreatedAt(ue.getCreatedAt());
+            guestbookPostDtos.add(guestbookPostDto);
+        }
+        return guestbookPostDtos;
     }
 }

@@ -1,6 +1,6 @@
 package com.github.heart0122.guestbook_backend.guestbook.controller;
 
-import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.service.GuestbookService;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class ReadGuestbookController {
     private final GuestbookService guestbookService;
 
     @GetMapping("/read/{userNickname}")
-    public ResponseEntity<List<GuestbookEntity>> readGuestbook(@PathVariable("userNickname") String userNickname) {
-        List<GuestbookEntity> guestbookEntities = guestbookService.read(userNickname);
-        return new ResponseEntity<>(guestbookEntities, HttpStatus.OK);
+    public ResponseEntity<List<GuestbookPostDto>> readGuestbook(@PathVariable("userNickname") String userNickname) {
+        List<GuestbookPostDto> guestbookPostDtos = guestbookService.read(userNickname);
+        return new ResponseEntity<>(guestbookPostDtos, HttpStatus.OK);
     }
 }
