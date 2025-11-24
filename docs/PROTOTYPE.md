@@ -1,9 +1,13 @@
 # 프로젝트 개요
 
-- 프로젝트 명 : semi 페이스북
+- 프로젝트 명 : hello guestbook(semi 페이스북, semi 싸이월드 구현)
 - 기획 의도/목표 : CRUD 구현 및 스프링(부트) 공부
 - 가상 타겟 : 친구와 교류하고 싶은 사람들
 - 기대 효과 : 친목 활성화
+- 사용 기술 :
+    - FE : claud등의 ai를 이용한 react.js
+    - BE : spring boot
+    - DB : mysql
 
 # 요구사항 명세
 
