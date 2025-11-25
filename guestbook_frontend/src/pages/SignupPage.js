@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './SignupPage.css';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,10 @@ export default function SignupPage() {
   
   const [errors, setErrors] = useState({});
   const [result, setResult] = useState(null);
+  const [checkStatus, setCheckStatus] = useState({
+    loginId: false,
+    nickname: false
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +31,40 @@ export default function SignupPage() {
         [name]: ''
       }));
     }
+    
+    // 입력 변경 시 중복체크 상태 초기화
+    if (name === 'loginId' || name === 'nickname') {
+      setCheckStatus(prev => ({
+        ...prev,
+        [name]: false
+      }));
+    }
+  };
+
+  // 아이디 중복체크
+  const handleCheckLoginId = () => {
+    if (!formData.loginId.trim()) {
+      alert('아이디를 입력해주세요.');
+      return;
+    }
+    
+    // 실제로는 API 호출
+    console.log('아이디 중복체크:', formData.loginId);
+    alert('사용 가능한 아이디입니다!');
+    setCheckStatus(prev => ({ ...prev, loginId: true }));
+  };
+
+  // 닉네임 중복체크
+  const handleCheckNickname = () => {
+    if (!formData.nickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+    
+    // 실제로는 API 호출
+    console.log('닉네임 중복체크:', formData.nickname);
+    alert('사용 가능한 닉네임입니다!');
+    setCheckStatus(prev => ({ ...prev, nickname: true }));
   };
 
   const validate = () => {
@@ -33,6 +72,8 @@ export default function SignupPage() {
     
     if (!formData.loginId.trim()) {
       newErrors.loginId = '로그인 아이디를 입력해주세요.';
+    } else if (!checkStatus.loginId) {
+      newErrors.loginId = '아이디 중복체크를 해주세요.';
     }
     
     if (!formData.password) {
@@ -47,6 +88,8 @@ export default function SignupPage() {
     
     if (!formData.nickname.trim()) {
       newErrors.nickname = '닉네임을 입력해주세요.';
+    } else if (!checkStatus.nickname) {
+      newErrors.nickname = '닉네임 중복체크를 해주세요.';
     }
     
     return newErrors;
@@ -76,30 +119,40 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">회원가입</h1>
+    <div className="signup-page">
+      <div className="signup-card">
+        <h1 className="signup-title">회원가입</h1>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+        <form onSubmit={handleSubmit} className="signup-form">
+          <div className="form-group-with-button">
+            <label className="form-label">
               로그인 아이디
             </label>
-            <input
-              type="text"
-              name="loginId"
-              value={formData.loginId}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-              placeholder="아이디를 입력하세요"
-            />
+            <div className="input-button-wrapper">
+              <input
+                type="text"
+                name="loginId"
+                value={formData.loginId}
+                onChange={handleChange}
+                className={`form-input ${errors.loginId ? 'error' : ''}`}
+                placeholder="아이디를 입력하세요"
+              />
+              <button
+                type="button"
+                onClick={handleCheckLoginId}
+                className="check-button"
+                disabled={!formData.loginId.trim()}
+              >
+                중복체크
+              </button>
+            </div>
             {errors.loginId && (
-              <p className="text-red-500 text-sm mt-1">{errors.loginId}</p>
+              <p className="error-message">{errors.loginId}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label className="form-label">
               비밀번호
             </label>
             <input
@@ -107,16 +160,16 @@ export default function SignupPage() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+              className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="비밀번호를 입력하세요"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              <p className="error-message">{errors.password}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group">
+            <label className="form-label">
               비밀번호 확인
             </label>
             <input
@@ -124,57 +177,67 @@ export default function SignupPage() {
               name="passwordConfirm"
               value={formData.passwordConfirm}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+              className={`form-input ${errors.passwordConfirm ? 'error' : ''}`}
               placeholder="비밀번호를 다시 입력하세요"
             />
             {errors.passwordConfirm && (
-              <p className="text-red-500 text-sm mt-1">{errors.passwordConfirm}</p>
+              <p className="error-message">{errors.passwordConfirm}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="form-group-with-button">
+            <label className="form-label">
               닉네임
             </label>
-            <input
-              type="text"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-              placeholder="닉네임을 입력하세요"
-            />
+            <div className="input-button-wrapper">
+              <input
+                type="text"
+                name="nickname"
+                value={formData.nickname}
+                onChange={handleChange}
+                className={`form-input ${errors.nickname ? 'error' : ''}`}
+                placeholder="닉네임을 입력하세요"
+              />
+              <button
+                type="button"
+                onClick={handleCheckNickname}
+                className="check-button"
+                disabled={!formData.nickname.trim()}
+              >
+                중복체크
+              </button>
+            </div>
             {errors.nickname && (
-              <p className="text-red-500 text-sm mt-1">{errors.nickname}</p>
+              <p className="error-message">{errors.nickname}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              상태메시지 <span className="text-gray-400 text-xs">(선택)</span>
+          <div className="form-group">
+            <label className="form-label">
+              상태메시지 <span className="optional-text">(선택)</span>
             </label>
             <input
               type="text"
               name="statusMessage"
               value={formData.statusMessage}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+              className="form-input"
               placeholder="상태메시지를 입력하세요"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 shadow-md hover:shadow-lg"
+            className="submit-button"
           >
             회원가입
           </button>
         </form>
 
         {result && (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">전송 데이터 (JSON)</h2>
-            <pre className="text-xs text-gray-600 overflow-x-auto">
+          <div className="result-container">
+            <h2 className="result-title">전송 데이터 (JSON)</h2>
+            <pre className="result-json">
               {JSON.stringify(result, null, 2)}
             </pre>
           </div>

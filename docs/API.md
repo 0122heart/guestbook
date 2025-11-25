@@ -2,19 +2,21 @@
 /main : 초기 화면
 
 - user
-/user/sign/in : 로그인 버튼
-/user/sign/up : 회원가입 버튼
+POST /api/sign-in : 로그인 버튼
+POST /api/sign-up : 회원가입 버튼
+POST /api/sign-up/duplicate-check/login-id : 로그인 아이디 중복체크
+POST /api/sign-up/duplicate-check/nickname : 닉네임 중복 체크
 
 - guestbook
-/guestbook/post : 글 작성 버튼
-/guestbook/patch : 글 수정 버튼
-/guestbook/delete : 글 삭제 버튼
-/guestbook/read/{userNickname} : userNickname에 해당하는 유저의 방명록 보기 버튼
+GET /api/guestbook/{user-nickname}
+POST /api/guestbook : 글 작성 버튼
+PATCH /api/guestbook : 글 수정 버튼
+DELETE /api/guestbook : 글 삭제 버튼
 /guestbook/post_comment : 댓글 작성 버튼
 /guestbook/patch_comment : 댓글 수정 버튼
 /guestbook/delete_comment : 댓글 삭제 버튼
 
 - friend
-/friend/accept : 친구 수락/거절 버튼
-/friend/list/{nickname} : nickname에 해당하는 유저의 친구목록 보기 버튼
-/friend/request : 친구 요청 버튼
+POST /api/friend/accept-or-reject : 친구 수락/거절 버튼
+POST /api/friend-list : 유저의 친구목록 보기 버튼
+POST /api/friend-request : 친구 요청 버튼

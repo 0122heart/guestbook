@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Data
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/sign-in")
 public class SignInController {
     private final SignInService signInService;
 
-    @PostMapping("/sign/in")
+    @PostMapping
     public ResponseEntity<UserEntity> SignIn(@RequestBody SignInDto signInDto){
         // SignInService에 입력된 아이디, 비밀번호 보내서 일치하면 OK
         if(signInService.signIn(signInDto)) return new ResponseEntity<>(HttpStatus.OK);

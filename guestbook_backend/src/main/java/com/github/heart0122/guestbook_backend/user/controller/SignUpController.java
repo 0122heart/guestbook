@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Data
-@RequestMapping("/user")
+@RequestMapping("/api/sign-up")
 public class SignUpController {
     private final SignUpService signUpService;
 
-    @PostMapping("/sign/up")
+    @PostMapping
     public ResponseEntity<String> signUp(@RequestBody SignUpDto signUpDto) {
         if(signUpService.signUp(signUpDto)) return new ResponseEntity<>("SUCCESS!", HttpStatus.OK);
         else return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
