@@ -19,6 +19,16 @@
 <25.11.20>
 - guestbook CRUD 1차 진행
 
+<25.11.21>
+- BE 1차 완성
+
+<25.11.24>
+- claud로 FE 구현 시작
+
+<25.11.26>
+- 여러 api들 RESTful하게 설정
+- claud로 FE 구현 중
+
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?
