@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Data
 @RequestMapping("/api/sign-up")
@@ -18,8 +21,16 @@ public class SignUpController {
     private final SignUpService signUpService;
 
     @PostMapping
-    public ResponseEntity<String> signUp(@RequestBody SignUpDto signUpDto) {
-        if(signUpService.signUp(signUpDto)) return new ResponseEntity<>("SUCCESS!", HttpStatus.OK);
-        else return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> signUp(@RequestBody SignUpDto signUpDto) {
+        HashMap<String, String> response = new HashMap<>();
+        if(signUpService.signUp(signUpDto)){
+            response.put("status", "success");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        else{
+            response.put("status", "fail");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

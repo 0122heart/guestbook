@@ -1,0 +1,231 @@
+.friends-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.friends-header {
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.friends-header h1 {
+  color: #667eea;
+  margin: 0;
+}
+
+.friends-header button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.friends-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.add-friend-section {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.add-friend-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.add-friend-section form {
+  display: flex;
+  gap: 10px;
+}
+
+.add-friend-section input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.add-friend-section button {
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 15px;
+  background: white;
+  border: 2px solid #e1e4e8;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tabs button.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.list-section {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+}
+
+.friends-list,
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.friend-item,
+.request-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.friend-item:hover,
+.request-item:hover {
+  transform: translateY(-2px);
+}
+
+.friend-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.friend-info,
+.request-info {
+  flex: 1;
+}
+
+.friend-info h3,
+.request-info h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.friend-info p,
+.request-info p {
+  margin: 0;
+  color: #999;
+  font-size: 13px;
+}
+
+.friend-actions,
+.request-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.friend-actions button,
+.request-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.visit-btn {
+  background: #667eea;
+  color: white;
+}
+
+.visit-btn:hover {
+  background: #5568d3;
+}
+
+.delete-btn {
+  background: #f5f7fa;
+  color: #666;
+  border: 1px solid #ddd !important;
+}
+
+.delete-btn:hover {
+  background: #e1e4e8;
+}
+
+.accept-btn {
+  background: #28a745;
+  color: white;
+}
+
+.accept-btn:hover {
+  background: #218838;
+}
+
+.reject-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.reject-btn:hover {
+  background: #c82333;
+}
+
+@media (max-width: 768px) {
+  .friend-item,
+  .request-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .friend-actions,
+  .request-actions {
+    width: 100%;
+    justify-content: center;
+  }
+}

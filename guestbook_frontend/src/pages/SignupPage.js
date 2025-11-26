@@ -16,6 +16,11 @@ export default function SignupPage() {
     loginId: false,
     nickname: false
   });
+  const [isChecking, setIsChecking] = useState({
+    loginId: false,
+    nickname: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,29 +47,81 @@ export default function SignupPage() {
   };
 
   // 아이디 중복체크
-  const handleCheckLoginId = () => {
+  const handleCheckLoginId = async () => {
     if (!formData.loginId.trim()) {
       alert('아이디를 입력해주세요.');
       return;
     }
     
-    // 실제로는 API 호출
-    console.log('아이디 중복체크:', formData.loginId);
-    alert('사용 가능한 아이디입니다!');
-    setCheckStatus(prev => ({ ...prev, loginId: true }));
+    setIsChecking(prev => ({ ...prev, loginId: true }));
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/sign-up/duplicate-check/login-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ checkOBject: formData.loginId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (!data.isDuplicate) {
+          alert('사용 가능한 아이디입니다!');
+          setCheckStatus(prev => ({ ...prev, loginId: true }));
+        } else {
+          alert('이미 사용 중인 아이디입니다.');
+          setCheckStatus(prev => ({ ...prev, loginId: false }));
+        }
+      } else {
+        alert('중복 체크에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('아이디 중복체크 에러:', error);
+      alert('서버와의 연결에 실패했습니다.');
+    } finally {
+      setIsChecking(prev => ({ ...prev, loginId: false }));
+    }
   };
 
   // 닉네임 중복체크
-  const handleCheckNickname = () => {
+  const handleCheckNickname = async () => {
     if (!formData.nickname.trim()) {
       alert('닉네임을 입력해주세요.');
       return;
     }
     
-    // 실제로는 API 호출
-    console.log('닉네임 중복체크:', formData.nickname);
-    alert('사용 가능한 닉네임입니다!');
-    setCheckStatus(prev => ({ ...prev, nickname: true }));
+    setIsChecking(prev => ({ ...prev, nickname: true }));
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/sign-up/duplicate-check/nickname', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ checkObject: formData.nickname })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (!data.isDuplicate) {
+          alert('사용 가능한 닉네임입니다!');
+          setCheckStatus(prev => ({ ...prev, nickname: true }));
+        } else {
+          alert('이미 사용 중인 닉네임입니다.');
+          setCheckStatus(prev => ({ ...prev, nickname: false }));
+        }
+      } else {
+        alert('중복 체크에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('닉네임 중복체크 에러:', error);
+      alert('서버와의 연결에 실패했습니다.');
+    } finally {
+      setIsChecking(prev => ({ ...prev, nickname: false }));
+    }
   };
 
   const validate = () => {
@@ -95,7 +152,7 @@ export default function SignupPage() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const newErrors = validate();
@@ -110,12 +167,40 @@ export default function SignupPage() {
       loginId: formData.loginId,
       password: formData.password,
       nickname: formData.nickname,
-      statusMessage: formData.statusMessage.trim() || null
+      statusMsg: formData.statusMessage.trim() || null
     };
     
-    // JSON 데이터 표시
-    setResult(submitData);
-    console.log('전송 데이터:', JSON.stringify(submitData, null, 2));
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('회원가입이 완료되었습니다!');
+        console.log('회원가입 성공:', data);
+        
+        // JSON 데이터 표시
+        setResult(submitData);
+        
+        // 성공 후 로그인 페이지로 이동 (선택사항)
+        // window.location.href = '/login';
+      } else {
+        const errorData = await response.json();
+        alert(`회원가입 실패: ${errorData.message || '다시 시도해주세요.'}`);
+      }
+    } catch (error) {
+      console.error('회원가입 에러:', error);
+      alert('서버와의 연결에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -136,18 +221,22 @@ export default function SignupPage() {
                 onChange={handleChange}
                 className={`form-input ${errors.loginId ? 'error' : ''}`}
                 placeholder="아이디를 입력하세요"
+                disabled={isSubmitting}
               />
               <button
                 type="button"
                 onClick={handleCheckLoginId}
                 className="check-button"
-                disabled={!formData.loginId.trim()}
+                disabled={!formData.loginId.trim() || isChecking.loginId || isSubmitting}
               >
-                중복체크
+                {isChecking.loginId ? '확인 중...' : '중복체크'}
               </button>
             </div>
             {errors.loginId && (
               <p className="error-message">{errors.loginId}</p>
+            )}
+            {checkStatus.loginId && !errors.loginId && (
+              <p className="success-message">✓ 사용 가능한 아이디입니다</p>
             )}
           </div>
 
@@ -162,6 +251,7 @@ export default function SignupPage() {
               onChange={handleChange}
               className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="비밀번호를 입력하세요"
+              disabled={isSubmitting}
             />
             {errors.password && (
               <p className="error-message">{errors.password}</p>
@@ -179,6 +269,7 @@ export default function SignupPage() {
               onChange={handleChange}
               className={`form-input ${errors.passwordConfirm ? 'error' : ''}`}
               placeholder="비밀번호를 다시 입력하세요"
+              disabled={isSubmitting}
             />
             {errors.passwordConfirm && (
               <p className="error-message">{errors.passwordConfirm}</p>
@@ -197,18 +288,22 @@ export default function SignupPage() {
                 onChange={handleChange}
                 className={`form-input ${errors.nickname ? 'error' : ''}`}
                 placeholder="닉네임을 입력하세요"
+                disabled={isSubmitting}
               />
               <button
                 type="button"
                 onClick={handleCheckNickname}
                 className="check-button"
-                disabled={!formData.nickname.trim()}
+                disabled={!formData.nickname.trim() || isChecking.nickname || isSubmitting}
               >
-                중복체크
+                {isChecking.nickname ? '확인 중...' : '중복체크'}
               </button>
             </div>
             {errors.nickname && (
               <p className="error-message">{errors.nickname}</p>
+            )}
+            {checkStatus.nickname && !errors.nickname && (
+              <p className="success-message">✓ 사용 가능한 닉네임입니다</p>
             )}
           </div>
 
@@ -223,14 +318,16 @@ export default function SignupPage() {
               onChange={handleChange}
               className="form-input"
               placeholder="상태메시지를 입력하세요"
+              disabled={isSubmitting}
             />
           </div>
 
           <button
             type="submit"
             className="submit-button"
+            disabled={isSubmitting}
           >
-            회원가입
+            {isSubmitting ? '회원가입 중...' : '회원가입'}
           </button>
         </form>
 

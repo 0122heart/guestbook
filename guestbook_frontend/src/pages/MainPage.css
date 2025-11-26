@@ -1,373 +1,123 @@
-/* src/pages/MainPage.css */
-
-/* 전체 페이지 배경 */
-.main-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 50%, #fce7f3 100%);
-  padding: 0;
-  margin: 0;
-}
-
-/* 컨테이너 */
 .main-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
 }
 
-/* ==================== 헤더 섹션 ==================== */
-.main-header {
+.main-content {
   text-align: center;
-  margin-bottom: 80px;
-  padding-top: 60px;
-}
-
-/* 로고 래퍼 */
-.logo-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-/* 로고 이미지 */
-.logo-image {
-  width: 180px;
-  height: auto;
-  max-width: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-  transition: transform 0.3s ease;
-}
-
-.logo-image:hover {
-  transform: scale(1.05);
-}
-
-/* 메인 타이틀 */
-.main-title {
-  font-size: 4rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 20px;
-  line-height: 1.2;
-}
-
-/* 서브 타이틀 */
-.main-subtitle {
-  font-size: 1.5rem;
-  color: #4b5563;
-  margin-bottom: 40px;
-}
-
-/* 버튼 그룹 */
-.button-group {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-/* 버튼 기본 스타일 */
-.btn {
-  padding: 15px 40px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-/* 주요 버튼 (로그인) */
-.btn-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
   color: white;
+  max-width: 1200px;
+  width: 100%;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #7e22ce 100%);
+.main-title {
+  font-size: 64px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 보조 버튼 (회원가입) */
-.btn-secondary {
+.main-subtitle {
+  font-size: 24px;
+  margin-bottom: 50px;
+  opacity: 0.9;
+}
+
+.main-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+
+.main-buttons button {
+  padding: 15px 50px;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-login {
   background: white;
-  color: #2563eb;
-  border: 2px solid #2563eb;
+  color: #667eea;
 }
 
-.btn-secondary:hover {
-  background: #eff6ff;
+.btn-login:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* ==================== 기능 소개 섹션 ==================== */
-.features-section {
-  max-width: 1100px;
-  margin: 0 auto 80px;
+.btn-signup {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
 }
 
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #1f2937;
-  margin-bottom: 60px;
+.btn-signup:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-3px);
 }
 
-/* 기능 카드 그리드 */
-.features-grid {
+.features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  padding: 0 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 60px;
 }
 
-/* 기능 카드 */
 .feature-card {
-  background: white;
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s;
 }
 
 .feature-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* 기능 아이콘 */
 .feature-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 30px;
-}
-
-.feature-icon .icon {
-  width: 40px;
-  height: 40px;
-  color: white;
-}
-
-.feature-icon-blue {
-  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-}
-
-.feature-icon-purple {
-  background: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
-}
-
-.feature-icon-pink {
-  background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
-}
-
-/* 기능 타이틀 */
-.feature-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 48px;
   margin-bottom: 20px;
 }
 
-/* 기능 설명 */
-.feature-description {
-  font-size: 1rem;
-  color: #6b7280;
-  line-height: 1.7;
+.feature-card h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
-/* ==================== CTA 섹션 ==================== */
-.cta-section {
-  max-width: 900px;
-  margin: 80px auto;
-  background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
-  border-radius: 24px;
-  padding: 60px 40px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+.feature-card p {
+  font-size: 16px;
+  opacity: 0.9;
 }
 
-.cta-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 20px;
-}
-
-.cta-subtitle {
-  font-size: 1.25rem;
-  color: #dbeafe;
-  margin-bottom: 40px;
-}
-
-.btn-cta {
-  background: white;
-  color: #9333ea;
-  padding: 18px 50px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.btn-cta:hover {
-  background: #f3f4f6;
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.btn-cta:active {
-  transform: scale(0.98);
-}
-
-/* ==================== 푸터 ==================== */
-.main-footer {
-  text-align: center;
-  margin-top: 80px;
-  padding-bottom: 40px;
-}
-
-.main-footer p {
-  font-size: 0.875rem;
-  color: #9ca3af;
-}
-
-/* ==================== 반응형 디자인 ==================== */
-
-/* 태블릿 */
 @media (max-width: 768px) {
   .main-title {
-    font-size: 2.5rem;
+    font-size: 40px;
   }
 
   .main-subtitle {
-    font-size: 1.125rem;
+    font-size: 18px;
   }
 
-  .logo-image {
-    width: 140px;
-  }
-
-  .button-group {
+  .main-buttons {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .main-buttons button {
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  .btn {
-    width: 100%;
-  }
-
-  .section-title {
-    font-size: 2rem;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .cta-title {
-    font-size: 2rem;
-  }
-
-  .cta-subtitle {
-    font-size: 1rem;
-  }
-
-  .cta-section {
-    padding: 40px 30px;
-  }
-}
-
-/* 모바일 */
-@media (max-width: 480px) {
-  .main-header {
-    padding-top: 40px;
-    margin-bottom: 50px;
-  }
-
-  .main-title {
-    font-size: 2rem;
-  }
-
-  .main-subtitle {
-    font-size: 1rem;
-  }
-
-  .logo-image {
-    width: 120px;
-  }
-
-  .btn {
-    padding: 12px 30px;
-    font-size: 1rem;
-  }
-
-  .section-title {
-    font-size: 1.75rem;
-  }
-
-  .feature-card {
-    padding: 30px 20px;
-  }
-
-  .feature-icon {
-    width: 60px;
-    height: 60px;
-  }
-
-  .feature-icon .icon {
-    width: 30px;
-    height: 30px;
-  }
-
-  .feature-title {
-    font-size: 1.25rem;
-  }
-
-  .feature-description {
-    font-size: 0.9rem;
-  }
-
-  .cta-section {
-    padding: 30px 20px;
-    margin: 50px 20px;
-  }
-
-  .cta-title {
-    font-size: 1.5rem;
-  }
-
-  .cta-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .btn-cta {
-    padding: 14px 30px;
-    font-size: 1rem;
+    max-width: 300px;
   }
 }

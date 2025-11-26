@@ -76,7 +76,7 @@ public class GuestbookService {
             for(var c : ue.getComments()){
                 GuestbookCommentDto guestbookCommentDto = new GuestbookCommentDto();
                 guestbookCommentDto.setCommentId(c.getCommentId());
-                guestbookCommentDto.setUserNickname(c.getUser().getNickname());
+                guestbookCommentDto.setNickname(c.getUser().getNickname());
                 guestbookCommentDto.setContent(c.getContent());
                 guestbookCommentDto.setCreatedAt(c.getCreatedAt());
                 guestbookListDto.getComments().add(guestbookCommentDto);

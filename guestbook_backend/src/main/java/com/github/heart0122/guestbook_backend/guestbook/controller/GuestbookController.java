@@ -37,7 +37,7 @@ public class GuestbookController {
         else return new ResponseEntity<>("Patch failed", HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("{guestbook-id")
+    @DeleteMapping("{guestbook-id}")
     public ResponseEntity<String> deleteGuestbook(
             @PathVariable("guestbook-id") Long guestbookId) {
         if(guestbookService.delete(guestbookId)) return new ResponseEntity<>("Delete successful", HttpStatus.OK);

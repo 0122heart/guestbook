@@ -1,0 +1,259 @@
+.profile-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.profile-header {
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-header h1 {
+  color: #667eea;
+  margin: 0;
+}
+
+.profile-header button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.profile-card {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.profile-info {
+  width: 100%;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row:last-of-type {
+  border-bottom: none;
+  margin-bottom: 20px;
+}
+
+.info-row .label {
+  color: #666;
+  font-weight: 500;
+}
+
+.info-row .value {
+  color: #333;
+}
+
+.info-row label {
+  color: #666;
+  font-weight: 500;
+  flex: 0 0 120px;
+}
+
+.info-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.info-row input:disabled {
+  background: #f5f7fa;
+  color: #999;
+}
+
+.edit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-btn {
+  background: #667eea;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #5568d3;
+}
+
+.cancel-btn {
+  background: #e1e4e8;
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background: #d1d4d8;
+}
+
+.password-section {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.password-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.password-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.input-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.change-password-btn {
+  width: 100%;
+  padding: 12px;
+  background: #f5f7fa;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.change-password-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+.actions-section {
+  display: flex;
+  gap: 15px;
+}
+
+.actions-section button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: transform 0.2s;
+}
+
+.actions-section button:hover {
+  transform: translateY(-2px);
+}
+
+.guestbook-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.friends-btn {
+  background: #f5f7fa;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.friends-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .info-row label {
+    flex: none;
+  }
+
+  .info-row input {
+    width: 100%;
+  }
+
+  .actions-section {
+    flex-direction: column;
+  }
+}
