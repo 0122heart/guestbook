@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class GuestbookPatchDto {
-    private Long guestbookId;
     private String title;
     private String content;
 }

@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/friend")
+@RequestMapping("/api/friend")
 public class FriendListController {
     private FriendListService friendListService;
 
     // user nickname으로
-    @GetMapping("/list/{nickname}")
+    @GetMapping("/{nickname}")
     public ResponseEntity<List<Pair<Long, String>>> getFriendList(@PathVariable("nickname") String nickname) {
         List<Pair<Long, String>> friendList = friendListService.getFriendList(nickname);
         return new ResponseEntity<>(friendList, HttpStatus.OK);

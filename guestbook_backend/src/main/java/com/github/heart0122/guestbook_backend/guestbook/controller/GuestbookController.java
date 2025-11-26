@@ -17,9 +17,9 @@ import java.util.List;
 public class GuestbookController {
     private final GuestbookService guestbookService;
 
-    @GetMapping("/{user-nickname}")
-    public ResponseEntity<List<GuestbookListDto>> readGuestbook(@PathVariable("userNickname") String userNickname) {
-        List<GuestbookListDto> guestbookListDtos = guestbookService.read(userNickname);
+    @GetMapping("/{nickname}")
+    public ResponseEntity<List<GuestbookListDto>> readGuestbook(@PathVariable("nickname") String nickname) {
+        List<GuestbookListDto> guestbookListDtos = guestbookService.read(nickname);
         return new ResponseEntity<>(guestbookListDtos, HttpStatus.OK);
     }
 
@@ -29,15 +29,18 @@ public class GuestbookController {
         else return new ResponseEntity<>("Post failed", HttpStatus.BAD_REQUEST);
     }
 
-    @PatchMapping
-    public ResponseEntity<String> patchGuestbook(GuestbookPatchDto guestbookPatchDto) {
-        if(guestbookService.patch(guestbookPatchDto)) return new ResponseEntity<>("Patch successful", HttpStatus.OK);
+    @PatchMapping("/{guestbook-id}")
+    public ResponseEntity<String> patchGuestbook(
+            @PathVariable("guestbook-id") Long guestbookId, GuestbookPatchDto guestbookPatchDto) {
+        if(guestbookService.patch(guestbookId, guestbookPatchDto))
+            return new ResponseEntity<>("Patch successful", HttpStatus.OK);
         else return new ResponseEntity<>("Patch failed", HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteGuestbook(GuestbookPatchDto guestbookPatchDto) {
-        if(guestbookService.delete(guestbookPatchDto)) return new ResponseEntity<>("Delete successful", HttpStatus.OK);
+    @DeleteMapping("{guestbook-id")
+    public ResponseEntity<String> deleteGuestbook(
+            @PathVariable("guestbook-id") Long guestbookId) {
+        if(guestbookService.delete(guestbookId)) return new ResponseEntity<>("Delete successful", HttpStatus.OK);
         else return new ResponseEntity<>("Delete failed", HttpStatus.BAD_REQUEST);
     }
 }

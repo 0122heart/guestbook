@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FriendAcceptanceController {
     private FriendAcceptanceService friendAcceptanceService;
 
-    @PostMapping("/{accept}")
-    public ResponseEntity<String> acceptFriendRequest(@PathVariable("accept") boolean accept, FriendDto friendDto) {
-        if(friendAcceptanceService.acceptOrReject(accept, friendDto))
+    @PostMapping("/{request-id}/{accept}")
+    public ResponseEntity<String> acceptFriendRequest(
+            @PathVariable("request-id") Long requestId, @PathVariable("accept") boolean accept, FriendDto friendDto) {
+        if(friendAcceptanceService.acceptOrReject(requestId, accept, friendDto))
             return new ResponseEntity<>("Accepted", HttpStatus.OK);
         else return new ResponseEntity<>("Rejected", HttpStatus.BAD_REQUEST);
     }

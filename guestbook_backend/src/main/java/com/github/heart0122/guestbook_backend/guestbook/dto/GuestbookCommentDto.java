@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class GuestbookCommentDto {
     private Long commentId;
-    private String userNickname;
+    private String nickname;
     private String content;
     private LocalDateTime createdAt;
 }

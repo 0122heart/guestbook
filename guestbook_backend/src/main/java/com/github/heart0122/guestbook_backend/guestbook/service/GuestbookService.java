@@ -36,8 +36,8 @@ public class GuestbookService {
         return true;
     }
 
-    public boolean patch(GuestbookPatchDto guestbookPatchDto){
-        GuestbookEntity guestbook = guestbookRepository.findById(guestbookPatchDto.getGuestbookId())
+    public boolean patch(Long guestbookId, GuestbookPatchDto guestbookPatchDto){
+        GuestbookEntity guestbook = guestbookRepository.findById(guestbookId)
                 .orElse(null);
         if(guestbook == null) {
             return false;
@@ -50,9 +50,9 @@ public class GuestbookService {
         return true;
     }
 
-    public boolean delete(GuestbookPatchDto guestbookPatchDto){
+    public boolean delete(Long guestbookId){
         try{
-            guestbookRepository.deleteByGuestbookId(guestbookPatchDto.getGuestbookId());
+            guestbookRepository.deleteByGuestbookId(guestbookId);
             return true;
         }
         catch (Exception e){

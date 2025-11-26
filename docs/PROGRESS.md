@@ -22,3 +22,6 @@
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?
+
+<2025.11.26>
+- trouble : API를 RESTful 원칙에 맞게 수정하려면 어떻게 설정해야하지

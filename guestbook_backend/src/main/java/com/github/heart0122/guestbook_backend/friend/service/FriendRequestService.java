@@ -16,9 +16,9 @@ public class FriendRequestService {
     private final UserRepository userRepository;
     private final FriendRequestRepository friendRequestRepository;
 
-    public boolean request(FriendDto friendDto){
-        UserEntity user1 = userRepository.findByNickname(friendDto.getSender());
-        UserEntity user2 = userRepository.findByNickname(friendDto.getReceiver());
+    public boolean request(String sender, String receiver){
+        UserEntity user1 = userRepository.findByNickname(sender);
+        UserEntity user2 = userRepository.findByNickname(receiver);
         if(user1 == null || user2 == null) return false;
 
         FriendRequestEntity friendRequestEntity = FriendRequestEntity.builder().

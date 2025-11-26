@@ -19,11 +19,9 @@ public class FriendAcceptanceService {
     private FriendListRepository friendListRepository;
     private UserRepository userRepository;
 
-    public boolean acceptOrReject(boolean accept, FriendDto friendDto) {
+    public boolean acceptOrReject(Long requestId, boolean accept, FriendDto friendDto) {
         UserEntity sender = userRepository.findByNickname(friendDto.getSender());
         UserEntity receiver = userRepository.findByNickname(friendDto.getReceiver());
-        FriendRequestEntity request = friendRequestRepository.findFriendRequestIdBySenderAndReceiver(sender, receiver);
-        Long requestId = request.getRequestId();
 
         // 친구 요청을 승인하든 거절하든 요청 객체는 삭제됨
         friendRequestRepository.deleteFriendRequestByRequestId(requestId);
