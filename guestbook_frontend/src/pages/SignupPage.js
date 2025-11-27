@@ -186,11 +186,7 @@ export default function SignupPage() {
         alert('회원가입이 완료되었습니다!');
         console.log('회원가입 성공:', data);
         
-        // JSON 데이터 표시
-        setResult(submitData);
-        
-        // 성공 후 로그인 페이지로 이동 (선택사항)
-        // window.location.href = '/login';
+        window.location.href = '/login';
       } else {
         const errorData = await response.json();
         alert(`회원가입 실패: ${errorData.message || '다시 시도해주세요.'}`);

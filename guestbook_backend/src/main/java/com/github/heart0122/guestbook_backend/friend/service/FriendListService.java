@@ -2,6 +2,7 @@ package com.github.heart0122.guestbook_backend.friend.service;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
+import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
@@ -11,16 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Service
-@Transactional
 public class FriendListService {
     private final FriendListRepository friendListRepository;
     private final UserRepository userRepository;
+    private final KeepLoginComponent keepLoginComponent;
 
-    public List<Pair<Long, String>> getFriendList(String nickname){
-        UserEntity user = userRepository.findByNickname(nickname);
+    public List<Pair<Long, String>> getFriendList(){
+        Optional<UserEntity> userOpt = userRepository.findById(keepLoginComponent.getId());
+        UserEntity user = userOpt.orElse(null);
         List<FriendListEntity> friendList = friendListRepository.findFriendByUser(user);
 
         List<Pair<Long, String>> result = new ArrayList<>();

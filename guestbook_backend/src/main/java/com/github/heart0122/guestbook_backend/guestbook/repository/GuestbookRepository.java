@@ -9,7 +9,5 @@ import java.util.List;
 
 @Repository
 public interface GuestbookRepository extends JpaRepository<GuestbookEntity, Long> {
-    void deleteByGuestbookId(Long guestbookId);
-    GuestbookEntity save(GuestbookEntity guestbookEntity);
     List<GuestbookEntity> findGuestbookEntitiesByOwner(UserEntity userEntity);
 }

@@ -6,6 +6,7 @@ import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
+import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
@@ -13,16 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Service
 public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
+    private final KeepLoginComponent keepLoginComponent;
 
     public boolean post(GuestbookPostDto guestbookPostDto){
-        UserEntity owner = userRepository.findByNickname(guestbookPostDto.getOwnerNickname());
-        UserEntity guest = userRepository.findByNickname(guestbookPostDto.getGuestNickname());
+        if(!keepLoginComponent.isLogin()) return false;
+
+        Optional<UserEntity> ownerOpt = userRepository.findById(guestbookPostDto.getOwnerId());
+        Optional<UserEntity> guestOpt = userRepository.findById(keepLoginComponent.getId());
+        UserEntity owner = ownerOpt.orElse(null);
+        UserEntity guest = guestOpt.orElse(null);
 
         if(owner == null || guest == null) return false;
 
@@ -52,7 +59,7 @@ public class GuestbookService {
 
     public boolean delete(Long guestbookId){
         try{
-            guestbookRepository.deleteByGuestbookId(guestbookId);
+            guestbookRepository.deleteById(guestbookId);
             return true;
         }
         catch (Exception e){
@@ -61,10 +68,11 @@ public class GuestbookService {
     }
 
     public List<GuestbookListDto> read(String userNickname) {
-        UserEntity userEntity = userRepository.findByNickname(userNickname);
+        Optional<UserEntity> userOpt = userRepository.findByNickname(userNickname);
+        UserEntity userEntity = userOpt.orElse(null);
+
         List<GuestbookListDto> guestbookListDtos = new ArrayList<>();
-        for(var ue : guestbookRepository.findGuestbookEntitiesByOwner(
-                userRepository.findByUserId(userEntity.getUserId()))){
+        for(var ue : guestbookRepository.findGuestbookEntitiesByOwner(userEntity)){
             GuestbookListDto guestbookListDto = new GuestbookListDto();
             guestbookListDto.setId(ue.getGuestbookId());
             guestbookListDto.setOwnerNickname(userEntity.getNickname());

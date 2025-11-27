@@ -19,10 +19,10 @@ public class SignUpService {
             signUpDto.getNickname() == null) return false;
 
         // 아이디가 중복되지는 않았는지 확인
-        if(userRepository.findByLoginId(signUpDto.getLoginId()) != null) return false;
+        if(userRepository.findByLoginId(signUpDto.getLoginId()).orElse(null) != null) return false;
 
         // 닉네임이 중복되지는 않았는지 확인
-        if(userRepository.findByNickname(signUpDto.getNickname()) != null) return false;
+        if(userRepository.findByNickname(signUpDto.getNickname()).orElse(null) != null) return false;
 
         // DTO -> Entity 변환
         UserEntity userEntity = UserEntity.builder() // UserEntity에 @Builder가 있다고 가정

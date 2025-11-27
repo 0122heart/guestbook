@@ -10,6 +10,8 @@ import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -23,7 +25,8 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("방명록을 찾을 수 없습니다."));
 
         // 2. 작성자 조회 (commentDto에 userId가 있다고 가정)
-        UserEntity user = userRepository.findByNickname(commentDto.getNickname());
+        Optional<UserEntity> userOpt = userRepository.findByNickname(commentDto.getNickname());
+        UserEntity user = userOpt.orElse(null);
 
         // 3. 댓글 생성 및 양방향 연관관계 설정
         CommentEntity comment = CommentEntity.builder()

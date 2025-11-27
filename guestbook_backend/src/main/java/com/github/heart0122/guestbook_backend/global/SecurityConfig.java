@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,8 +31,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션 필요시 생성
+                        .maximumSessions(1) // 동시 세션 1개만 허용 (선택사항)
+                )
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
                 );
@@ -52,7 +57,7 @@ public class SecurityConfig {
         // 허용할 헤더
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
-        // 인증 정보 포함 허용 (쿠키, 인증 헤더 등)
+        // 인증 정보 포함 허용 (쿠키, 인증 헤더 등) - 이미 설정되어 있음 ✅
         configuration.setAllowCredentials(true);
 
         // CORS 설정을 모든 /api/** 경로에 적용

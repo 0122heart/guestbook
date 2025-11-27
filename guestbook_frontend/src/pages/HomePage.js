@@ -1,20 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 function HomePage() {
   const [friends, setFriends] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchFriends();
+    fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchFriends();
+    }
+  }, [currentUser]);
+
+  // 현재 로그인한 사용자 정보 가져오기
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/user/current`, {
+        credentials: 'include' // 세션 쿠키 포함
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentUser(data);
+      } else {
+        // 로그인되지 않은 경우
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('사용자 정보 불러오기 실패:', error);
+      window.location.href = '/login';
+    }
+  };
 
   const fetchFriends = async () => {
     try {
-      // 현재 로그인한 사용자의 닉네임 (실제로는 세션/토큰에서 가져와야 함)
-      const currentUserNickname = 'myNickname';
+      const response = await fetch(`${API_BASE_URL}/api/friend/${currentUser.nickname}`, {
+        credentials: 'include' // 세션 쿠키 포함
+      });
       
-      const response = await fetch(`/api/friend/${currentUserNickname}`);
       if (response.ok) {
         const data = await response.json();
         setFriends(data);
@@ -26,17 +55,36 @@ function HomePage() {
     }
   };
 
-  const handleLogout = () => {
-    // 로그아웃 처리
-    // localStorage.removeItem('token');
-    window.location.href = '/login';
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/user/signout`, {
+        method: 'POST',
+        credentials: 'include' // 세션 쿠키 포함
+      });
+      
+      if (response.ok) {
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      window.location.href = '/login';
+    }
   };
+
+  if (!currentUser) {
+    return (
+      <div className="home-container">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="home-container">
       <header className="home-header">
         <h1>방명록 홈</h1>
         <div className="header-buttons">
+          <span className="user-info">{currentUser.nickname}님</span>
           <button onClick={() => window.location.href = '/profile'}>
             내 프로필
           </button>
@@ -81,7 +129,7 @@ function HomePage() {
             친구 관리
           </button>
           <button 
-            onClick={() => window.location.href = `/guestbook/myNickname`}
+            onClick={() => window.location.href = `/guestbook/${currentUser.nickname}`}
             className="action-btn primary"
           >
             내 방명록 보기

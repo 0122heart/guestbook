@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 function LoginPage() {
   const [formData, setFormData] = useState({
     loginId: '',
@@ -21,20 +23,19 @@ function LoginPage() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/sign-in', {
+      const response = await fetch(`${API_BASE_URL}/api/sign/in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // ⭐ 세션 쿠키 받기
         body: JSON.stringify(formData)
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // 로그인 성공 처리 (토큰 저장)
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('nickname', data.nickname);
-        alert('로그인 성공!');
+        const data = await response.text();
+        console.log('로그인 성공:', data);
+        // 로그인 성공 시 홈으로 이동
         window.location.href = '/home';
       } else {
         alert('로그인 실패: 아이디 또는 비밀번호를 확인해주세요.');

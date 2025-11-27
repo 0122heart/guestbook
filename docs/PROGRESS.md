@@ -29,6 +29,11 @@
 - 여러 api들 RESTful하게 설정
 - claud로 FE 구현 중
 
+<25.11.27>
+- @repository에서 여러 반환값들을 Optional로 설정
+- @SessionScope를 통해 로그인 유지 구현
+- h2 db를 메모리 모드가 아닌 파일 모드로 변경
+
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?

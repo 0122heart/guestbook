@@ -1,6 +1,5 @@
 package com.github.heart0122.guestbook_backend.friend.controller;
 
-import com.github.heart0122.guestbook_backend.friend.dto.FriendDto;
 import com.github.heart0122.guestbook_backend.friend.service.FriendAcceptanceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,8 @@ public class FriendAcceptanceController {
 
     @PostMapping("/{request-id}/{accept}")
     public ResponseEntity<String> acceptFriendRequest(
-            @PathVariable("request-id") Long requestId, @PathVariable("accept") boolean accept, FriendDto friendDto) {
-        if(friendAcceptanceService.acceptOrReject(requestId, accept, friendDto))
+            @PathVariable("request-id") Long requestId, @PathVariable("accept") boolean accept) {
+        if(friendAcceptanceService.acceptOrReject(requestId, accept))
             return new ResponseEntity<>("Accepted", HttpStatus.OK);
         else return new ResponseEntity<>("Rejected", HttpStatus.BAD_REQUEST);
     }

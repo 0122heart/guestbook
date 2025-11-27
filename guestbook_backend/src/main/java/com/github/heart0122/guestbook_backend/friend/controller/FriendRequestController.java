@@ -1,6 +1,5 @@
 package com.github.heart0122.guestbook_backend.friend.controller;
 
-import com.github.heart0122.guestbook_backend.friend.dto.FriendDto;
 import com.github.heart0122.guestbook_backend.friend.service.FriendRequestService;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -16,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FriendRequestController {
     private final FriendRequestService friendRequestService;
 
-    @PostMapping("/request/{sender}/{receiver}")
+    @PostMapping("/request/{receiver}")
     public ResponseEntity<String> friendRequest(
-            @PathVariable("sender") String sender, @PathVariable("receiver") String receiver) {
-        if(friendRequestService.request(sender, receiver))
+            @PathVariable("receiver") Long receiver) {
+        if(friendRequestService.request(receiver))
             return new ResponseEntity<>("Request accepted", HttpStatus.OK);
         else return new ResponseEntity<>("Request rejected", HttpStatus.BAD_REQUEST);
     }

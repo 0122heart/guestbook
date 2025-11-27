@@ -19,8 +19,8 @@ public class FriendListController {
 
     // user nickname으로
     @GetMapping("/{nickname}")
-    public ResponseEntity<List<Pair<Long, String>>> getFriendList(@PathVariable("nickname") String nickname) {
-        List<Pair<Long, String>> friendList = friendListService.getFriendList(nickname);
+    public ResponseEntity<List<Pair<Long, String>>> getFriendList() {
+        List<Pair<Long, String>> friendList = friendListService.getFriendList();
         return new ResponseEntity<>(friendList, HttpStatus.OK);
     }
 
