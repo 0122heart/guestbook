@@ -21,7 +21,7 @@ function HomePage() {
   // 현재 로그인한 사용자 정보 가져오기
   const fetchCurrentUser = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/current`, {
+      const response = await fetch(`${API_BASE_URL}/api/current`, {
         credentials: 'include' // 세션 쿠키 포함
       });
       
@@ -29,11 +29,14 @@ function HomePage() {
         const data = await response.json();
         setCurrentUser(data);
       } else {
-        // 로그인되지 않은 경우
+        // ⭐ [수정됨] 세션이 만료되었거나 없을 경우 로컬 스토리지 정리
+        console.warn('세션이 유효하지 않습니다.');
+        localStorage.removeItem('isLoggedIn');
         window.location.href = '/login';
       }
     } catch (error) {
       console.error('사용자 정보 불러오기 실패:', error);
+      localStorage.removeItem('isLoggedIn');
       window.location.href = '/login';
     }
   };
@@ -62,11 +65,14 @@ function HomePage() {
         credentials: 'include' // 세션 쿠키 포함
       });
       
-      if (response.ok) {
-        window.location.href = '/login';
-      }
+      // ⭐ [수정됨] 응답 성공 여부와 관계없이 클라이언트 로그아웃 처리
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = '/login';
+      
     } catch (error) {
-      console.error('로그아웃 실패:', error);
+      console.error('로그아웃 요청 실패:', error);
+      // 에러가 나더라도 사용자는 로그아웃 처리
+      localStorage.removeItem('isLoggedIn');
       window.location.href = '/login';
     }
   };

@@ -28,13 +28,17 @@ function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // ⭐ 세션 쿠키 받기
+        credentials: 'include', // 세션 쿠키 받기
         body: JSON.stringify(formData)
       });
 
       if (response.ok) {
         const data = await response.text();
         console.log('로그인 성공:', data);
+        
+        // ⭐ [수정됨] App.js의 ProtectedRoute 통과를 위해 로컬 스토리지 저장
+        localStorage.setItem('isLoggedIn', 'true');
+
         // 로그인 성공 시 홈으로 이동
         window.location.href = '/home';
       } else {

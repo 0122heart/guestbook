@@ -42,4 +42,5 @@
 - trouble : API를 RESTful 원칙에 맞게 수정하려면 어떻게 설정해야하지
 
 <25.11.27>
-- @SessionScope를 설정했는데도 로그인이 유지가 안된다... why?
+- trouble : @SessionScope를 설정했는데도 로그인이 유지가 안된다... why?
+- solution : LoginPage.js에서 백엔드 통신 성공 후 localStorage에 해당 값을 저장하는 코드가 누락되어 있었음 => 이로 인해 서버 세션은 유효하지만, 클라이언트 라우터는 사용자를 '비로그인' 상태로 인식하여 접근을 차단 => 로그인 로직 수정

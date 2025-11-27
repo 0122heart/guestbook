@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,9 @@ import java.util.Map;
 @Setter
 @Component
 @SessionScope
-public class KeepLoginComponent {
+public class KeepLoginComponent implements Serializable {
+    private final static long serialVersionUID = 1L;
+
     private Long id = null;
     private String nickname = null;
 

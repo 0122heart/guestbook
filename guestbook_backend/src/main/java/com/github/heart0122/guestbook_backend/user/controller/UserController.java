@@ -12,11 +12,11 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user/current")
+@RequestMapping("/api")
 public class UserController {
     private final KeepLoginComponent keepLoginComponent;
 
-    @GetMapping
+    @GetMapping("/current")
     public ResponseEntity<?> getCurrentUser() {
         Map<String, Object> currentUser = keepLoginComponent.getCurrentUser();
 
