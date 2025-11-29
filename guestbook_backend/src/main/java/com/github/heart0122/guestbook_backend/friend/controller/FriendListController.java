@@ -2,11 +2,11 @@ package com.github.heart0122.guestbook_backend.friend.controller;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.service.FriendListService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,11 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/friend")
+@RequiredArgsConstructor
 public class FriendListController {
-    private FriendListService friendListService;
+    private final FriendListService friendListService;
 
     // user nickname으로
-    @GetMapping("/{nickname}")
+    @GetMapping()
     public ResponseEntity<List<Pair<Long, String>>> getFriendList() {
         List<Pair<Long, String>> friendList = friendListService.getFriendList();
         return new ResponseEntity<>(friendList, HttpStatus.OK);

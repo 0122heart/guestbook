@@ -14,7 +14,7 @@ public class CheckDuplicateController {
 
     @PostMapping("/login-id")
     public ResponseEntity<CheckDuplicateDto> checkLoginId(@RequestBody CheckDuplicateDto checkDuplicateDto) {
-        checkDuplicateDto.setDuplicate(duplicateCheckService.checkNickname(checkDuplicateDto.getCheckObject()));
+        checkDuplicateDto.setDuplicate(duplicateCheckService.checkLoginId(checkDuplicateDto.getCheckObject()));
         return ResponseEntity.ok(checkDuplicateDto);
     }
 

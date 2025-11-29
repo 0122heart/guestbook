@@ -2,23 +2,63 @@ import React, { useState, useEffect } from 'react';
 import './FriendsPage.css';
 
 function FriendsPage() {
+  const baseURL = 'http://localhost:8080';
+  
   const [friends, setFriends] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [searchNickname, setSearchNickname] = useState('');
-  const [activeTab, setActiveTab] = useState('friends'); // 'friends' or 'requests'
-  const currentUserNickname = 'myNickname'; // 실제로는 세션에서 가져와야 함
+  const [searchResult, setSearchResult] = useState(null); // 검색 결과: 사용자 정보 또는 null
+  const [searchError, setSearchError] = useState(''); // 검색 에러 메시지
+  const [activeTab, setActiveTab] = useState('friends');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    fetchFriends();
-    fetchFriendRequests();
+    fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchFriends();
+      fetchFriendRequests();
+    }
+  }, [currentUser]);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/current`, {
+        credentials: 'include'
+      });
+      
+      console.log('fetchCurrentUser response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('fetchCurrentUser data:', data);
+        setCurrentUser(data);
+      } else {
+        console.error('fetchCurrentUser failed with status:', response.status);
+        alert('로그인이 필요합니다.');
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('사용자 정보 불러오기 실패:', error);
+      alert('세션 정보를 불러올 수 없습니다.');
+      window.location.href = '/login';
+    }
+  };
 
   const fetchFriends = async () => {
     try {
-      const response = await fetch(`/api/friend/${currentUserNickname}`);
+      const response = await fetch(`${baseURL}/api/friend`, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
-        setFriends(data);
+        const formattedFriends = data.map(pair => ({
+          userId: pair.first,
+          nickname: pair.second
+        }));
+        setFriends(formattedFriends);
       }
     } catch (error) {
       console.error('친구 목록 불러오기 실패:', error);
@@ -26,9 +66,10 @@ function FriendsPage() {
   };
 
   const fetchFriendRequests = async () => {
-    // API가 있다고 가정
     try {
-      const response = await fetch('/api/friend/request');
+      const response = await fetch(`${baseURL}/api/friend/request`, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
         setFriendRequests(data);
@@ -38,35 +79,45 @@ function FriendsPage() {
     }
   };
 
-  const handleSendRequest = async (e) => {
+  // 닉네임으로 사용자 검색
+  const handleSearchUser = async (e) => {
     e.preventDefault();
-    if (!searchNickname.trim()) return;
+    if (!searchNickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
 
     try {
-      const response = await fetch('/api/friend/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetNickname: searchNickname })
+      const response = await fetch(`${baseURL}/api/user/search?nickname=${encodeURIComponent(searchNickname)}`, {
+        credentials: 'include'
       });
-
+      
       if (response.ok) {
-        alert('친구 요청을 보냈습니다!');
-        setSearchNickname('');
+        const user = await response.json();
+        setSearchResult(user);
+        setSearchError('');
       } else {
-        alert('친구 요청 실패: 닉네임을 확인해주세요.');
+        setSearchResult(null);
+        setSearchError('존재하지 않는 사용자입니다.');
       }
     } catch (error) {
-      console.error('친구 요청 실패:', error);
-      alert('친구 요청 중 오류가 발생했습니다.');
+      console.error('사용자 검색 실패:', error);
+      setSearchResult(null);
+      setSearchError('검색 중 오류가 발생했습니다.');
     }
+  };
+
+  // 프로필 페이지로 이동
+  const handleViewProfile = (nickname) => {
+    window.location.href = `/profile/${nickname}`;
   };
 
   const handleRequestResponse = async (requestId, accept) => {
     try {
-      const response = await fetch(`/api/friend/request/${requestId}`, {
-        method: 'PATCH',
+      const response = await fetch(`${baseURL}/api/friend/${requestId}/${accept}`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accept })
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -83,8 +134,9 @@ function FriendsPage() {
     if (!window.confirm('정말 친구를 삭제하시겠습니까?')) return;
 
     try {
-      const response = await fetch(`/api/friend/${friendId}`, {
-        method: 'DELETE'
+      const response = await fetch(`${baseURL}/api/friend/${friendId}`, {
+        method: 'DELETE',
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -95,29 +147,59 @@ function FriendsPage() {
     }
   };
 
+  if (!currentUser) {
+    return <div className="loading">로딩 중...</div>;
+  }
+
   return (
     <div className="friends-container">
       <header className="friends-header">
         <h1>친구 관리</h1>
-        <button onClick={() => window.location.href = '/home'}>홈으로</button>
+        <div className="header-info">
+          <span>안녕하세요, {currentUser.nickname}님!</span>
+          <button onClick={() => window.location.href = '/home'}>홈으로</button>
+        </div>
       </header>
 
       <div className="friends-main">
-        {/* 친구 추가 섹션 */}
         <section className="add-friend-section">
-          <h2>친구 추가</h2>
-          <form onSubmit={handleSendRequest}>
+          <h2>친구 검색</h2>
+          <form onSubmit={handleSearchUser}>
             <input
               type="text"
               placeholder="친구의 닉네임을 입력하세요"
               value={searchNickname}
               onChange={(e) => setSearchNickname(e.target.value)}
             />
-            <button type="submit">친구 요청</button>
+            <button type="submit">검색</button>
           </form>
+          
+          {/* 검색 결과 */}
+          {searchResult && (
+            <div className="search-result-box">
+              <div className="friend-avatar">
+                {searchResult.nickname.charAt(0).toUpperCase()}
+              </div>
+              <div className="search-info">
+                <h3>{searchResult.nickname}</h3>
+              </div>
+              <button
+                onClick={() => handleViewProfile(searchResult.nickname)}
+                className="view-profile-btn"
+              >
+                프로필 보기
+              </button>
+            </div>
+          )}
+          
+          {/* 검색 에러 */}
+          {searchError && (
+            <div className="search-error">
+              {searchError}
+            </div>
+          )}
         </section>
 
-        {/* 탭 메뉴 */}
         <div className="tabs">
           <button
             className={activeTab === 'friends' ? 'active' : ''}
@@ -133,7 +215,6 @@ function FriendsPage() {
           </button>
         </div>
 
-        {/* 친구 목록 */}
         {activeTab === 'friends' && (
           <section className="list-section">
             {friends.length === 0 ? (
@@ -141,13 +222,12 @@ function FriendsPage() {
             ) : (
               <div className="friends-list">
                 {friends.map((friend) => (
-                  <div key={friend.friendId} className="friend-item">
+                  <div key={friend.userId} className="friend-item">
                     <div className="friend-avatar">
                       {friend.nickname.charAt(0).toUpperCase()}
                     </div>
                     <div className="friend-info">
                       <h3>{friend.nickname}</h3>
-                      <p>친구가 된 날: {new Date(friend.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="friend-actions">
                       <button
@@ -157,7 +237,7 @@ function FriendsPage() {
                         방명록 보기
                       </button>
                       <button
-                        onClick={() => handleDeleteFriend(friend.friendId)}
+                        onClick={() => handleDeleteFriend(friend.userId)}
                         className="delete-btn"
                       >
                         삭제
@@ -170,7 +250,6 @@ function FriendsPage() {
           </section>
         )}
 
-        {/* 친구 요청 목록 */}
         {activeTab === 'requests' && (
           <section className="list-section">
             {friendRequests.length === 0 ? (

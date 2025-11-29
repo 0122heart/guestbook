@@ -43,7 +43,7 @@ function HomePage() {
 
   const fetchFriends = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/friend/${currentUser.nickname}`, {
+      const response = await fetch(`${API_BASE_URL}/api/friend`, {
         credentials: 'include' // 세션 쿠키 포함
       });
       

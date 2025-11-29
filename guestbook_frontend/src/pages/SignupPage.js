@@ -61,13 +61,13 @@ export default function SignupPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ checkOBject: formData.loginId })
+        body: JSON.stringify({ checkObject: formData.loginId })
       });
 
       if (response.ok) {
         const data = await response.json();
         
-        if (!data.isDuplicate) {
+        if (!data.duplicate) {
           alert('사용 가능한 아이디입니다!');
           setCheckStatus(prev => ({ ...prev, loginId: true }));
         } else {
@@ -106,7 +106,7 @@ export default function SignupPage() {
       if (response.ok) {
         const data = await response.json();
         
-        if (!data.isDuplicate) {
+        if (!data.duplicate) {
           alert('사용 가능한 닉네임입니다!');
           setCheckStatus(prev => ({ ...prev, nickname: true }));
         } else {
