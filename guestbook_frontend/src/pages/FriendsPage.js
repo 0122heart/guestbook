@@ -54,11 +54,8 @@ function FriendsPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        const formattedFriends = data.map(pair => ({
-          userId: pair.first,
-          nickname: pair.second
-        }));
-        setFriends(formattedFriends);
+        // FriendListDto를 직접 사용 (변환 불필요)
+        setFriends(data);
       }
     } catch (error) {
       console.error('친구 목록 불러오기 실패:', error);
@@ -114,7 +111,7 @@ function FriendsPage() {
   const handleRequestResponse = async (requestId, accept) => {
     try {
       const response = await fetch(`${baseURL}/api/friend/${requestId}/${accept}`, {
-        method: 'GET',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
       });
@@ -221,10 +218,15 @@ function FriendsPage() {
                 {friends.map((friend) => (
                   <div key={friend.userId} className="friend-item">
                     <div className="friend-avatar">
-                      {friend.nickname.charAt(0).toUpperCase()}
+                      {friend.nickname?.charAt(0).toUpperCase() || '?'}
                     </div>
                     <div className="friend-info">
                       <h3>{friend.nickname}</h3>
+                      {friend.createdAt && (
+                        <p className="friend-date">
+                          {new Date(friend.createdAt).toLocaleDateString()} 친구
+                        </p>
+                      )}
                     </div>
                     <div className="friend-actions">
                       <button

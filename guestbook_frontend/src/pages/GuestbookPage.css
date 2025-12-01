@@ -24,6 +24,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s;
+}
+
+.guestbook-header button:hover {
+  background: #5568d3;
 }
 
 .guestbook-main {
@@ -32,6 +37,29 @@
   padding: 40px 20px;
 }
 
+/* 방명록 쓰기 버튼 */
+.write-button-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.show-write-btn {
+  padding: 15px 30px;
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.show-write-btn:hover {
+  background-color: #5f4fd1;
+}
+
+/* 글 작성 섹션 */
 .write-section {
   background: white;
   padding: 30px;
@@ -40,9 +68,30 @@
   margin-bottom: 30px;
 }
 
-.write-section h2 {
+.write-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+}
+
+.write-section h2 {
+  margin: 0;
   color: #333;
+}
+
+.close-write-btn {
+  padding: 8px 16px;
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.close-write-btn:hover {
+  background-color: #7f8c8d;
 }
 
 .write-section form {
@@ -64,7 +113,7 @@
   resize: vertical;
 }
 
-.write-section button {
+.write-section button[type="submit"] {
   padding: 12px;
   background: #667eea;
   color: white;
@@ -72,8 +121,44 @@
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.3s;
 }
 
+.write-section button[type="submit"]:hover {
+  background: #5568d3;
+}
+
+/* 빈 방명록 */
+.empty-guestbook {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-guestbook p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.write-first-btn {
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.write-first-btn:hover {
+  background-color: #2980b9;
+}
+
+/* 방명록 리스트 */
 .posts-section {
   display: flex;
   flex-direction: column;
@@ -85,6 +170,11 @@
   padding: 25px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s;
+}
+
+.post-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .post-header {
@@ -111,6 +201,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
+  transition: all 0.3s;
 }
 
 .post-actions button:hover {
@@ -133,6 +224,7 @@
   color: #999;
 }
 
+/* 댓글 섹션 */
 .comments-section {
   margin-top: 20px;
   padding-top: 20px;
@@ -171,6 +263,11 @@
   color: #667eea;
   cursor: pointer;
   font-size: 12px;
+  transition: color 0.3s;
+}
+
+.comment-info button:hover {
+  color: #5568d3;
 }
 
 .comment-write {
@@ -193,8 +290,14 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
+.comment-write button:hover {
+  background: #5568d3;
+}
+
+/* 수정 폼 */
 .edit-form,
 .edit-comment {
   display: flex;
@@ -210,6 +313,11 @@
   border-radius: 5px;
 }
 
+.edit-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
 .button-group {
   display: flex;
   gap: 10px;
@@ -220,6 +328,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 .button-group button:first-child {
@@ -227,10 +336,19 @@
   color: white;
 }
 
+.button-group button:first-child:hover {
+  background: #5568d3;
+}
+
 .button-group button:last-child {
   background: #ddd;
 }
 
+.button-group button:last-child:hover {
+  background: #c5c5c5;
+}
+
+/* 로딩 */
 .loading {
   display: flex;
   justify-content: center;
@@ -238,4 +356,33 @@
   min-height: 100vh;
   font-size: 18px;
   color: #666;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .guestbook-header {
+    padding: 15px 20px;
+  }
+
+  .guestbook-main {
+    padding: 20px 15px;
+  }
+
+  .post-card {
+    padding: 20px;
+  }
+
+  .post-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .comment-write {
+    flex-direction: column;
+  }
+
+  .comment-write button {
+    width: 100%;
+  }
 }

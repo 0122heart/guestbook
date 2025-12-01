@@ -9,44 +9,85 @@ import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepo
 import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Data
 @Service
+@RequiredArgsConstructor
 public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
 
-    public boolean post(GuestbookPostDto guestbookPostDto){
-        if(!keepLoginService.isLogin()) return false;
+    @Transactional
+    public boolean post(GuestbookPostDto guestbookPostDto) {
+        // 로그 추가 (디버깅용)
+        System.out.println("받은 DTO: " + guestbookPostDto);
+        System.out.println("ownerId: " + guestbookPostDto.getOwnerId());
 
-        Optional<UserEntity> ownerOpt = userRepository.findById(guestbookPostDto.getOwnerId());
-        Optional<UserEntity> guestOpt = userRepository.findById(keepLoginService.getId());
-        UserEntity owner = ownerOpt.orElse(null);
-        UserEntity guest = guestOpt.orElse(null);
+        if (!keepLoginService.isLogin()) {
+            System.out.println("로그인 안 됨");
+            return false;
+        }
 
-        if(owner == null || guest == null) return false;
+        Long guestId = keepLoginService.getId();
+        if (guestId == null) {
+            System.out.println("guestId가 null");
+            return false;
+        }
 
-        GuestbookEntity guestbook = GuestbookEntity.builder().
-                owner(owner).
-                guest(guest).
-                title(guestbookPostDto.getTitle()).
-                content(guestbookPostDto.getContent()).
-                build();
+        if (guestbookPostDto.getOwnerId() == null) {
+            System.out.println("ownerId가 null");
+            return false;
+        }
+
+        System.out.println("Owner 조회 시작 - ID: " + guestbookPostDto.getOwnerId());
+
+        // ownerId로 owner 찾기
+        UserEntity owner = userRepository.findById(guestbookPostDto.getOwnerId())
+                .orElse(null);
+
+        System.out.println("Guest 조회 시작 - ID: " + guestId);
+
+        // 작성자(guest) 찾기
+        UserEntity guest = userRepository.findById(guestId).orElse(null);
+
+        if (owner == null) {
+            System.out.println("owner를 찾을 수 없음");
+            return false;
+        }
+
+        if (guest == null) {
+            System.out.println("guest를 찾을 수 없음");
+            return false;
+        }
+
+        System.out.println("방명록 저장 시작");
+
+        GuestbookEntity guestbook = GuestbookEntity.builder()
+                .owner(owner)
+                .guest(guest)
+                .title(guestbookPostDto.getTitle())
+                .content(guestbookPostDto.getContent())
+                .createdAt(LocalDateTime.now())
+                .build();
+
         guestbookRepository.save(guestbook);
+        System.out.println("방명록 저장 완료");
         return true;
     }
 
-    public boolean patch(Long guestbookId, GuestbookPatchDto guestbookPatchDto){
+    @Transactional
+    public boolean patch(Long guestbookId, GuestbookPatchDto guestbookPatchDto) {
         GuestbookEntity guestbook = guestbookRepository.findById(guestbookId)
                 .orElse(null);
-        if(guestbook == null) {
+
+        if (guestbook == null) {
             return false;
         }
 
@@ -57,40 +98,52 @@ public class GuestbookService {
         return true;
     }
 
-    public boolean delete(Long guestbookId){
-        try{
+    @Transactional
+    public boolean delete(Long guestbookId) {
+        try {
             guestbookRepository.deleteById(guestbookId);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
     public List<GuestbookDto> read(String userNickname) {
-        Optional<UserEntity> userOpt = userRepository.findByNickname(userNickname);
-        UserEntity userEntity = userOpt.orElse(null);
+        UserEntity userEntity = userRepository.findByNickname(userNickname)
+                .orElse(null);
+
+        if (userEntity == null) {
+            return new ArrayList<>();
+        }
 
         List<GuestbookDto> guestbookDtos = new ArrayList<>();
-        for(var ue : guestbookRepository.findByOwner(userEntity)){
-            GuestbookDto guestbookDto = new GuestbookDto();
-            guestbookDto.setId(ue.getGuestbookId());
-            guestbookDto.setOwnerNickname(userEntity.getNickname());
-            guestbookDto.setGuestNickname(ue.getGuest().getNickname());
-            guestbookDto.setTitle(ue.getTitle());
-            guestbookDto.setContent(ue.getContent());
-            guestbookDto.setCreatedAt(ue.getCreatedAt());
-            guestbookDto.setComments(new ArrayList<>());
-            for(var c : ue.getComments()){
-                GuestbookCommentDto guestbookCommentDto = new GuestbookCommentDto();
-                guestbookCommentDto.setCommentId(c.getCommentId());
-                guestbookCommentDto.setNickname(c.getUser().getNickname());
-                guestbookCommentDto.setContent(c.getContent());
-                guestbookCommentDto.setCreatedAt(c.getCreatedAt());
-                guestbookDto.getComments().add(guestbookCommentDto);
-                guestbookDtos.add(guestbookDto);
+        List<GuestbookEntity> guestbooks = guestbookRepository.findByOwner(userEntity);
+
+        for (GuestbookEntity guestbook : guestbooks) {
+            GuestbookDto guestbookDto = GuestbookDto.builder()
+                    .id(guestbook.getGuestbookId())
+                    .ownerNickname(userEntity.getNickname())
+                    .guestNickname(guestbook.getGuest().getNickname())
+                    .title(guestbook.getTitle())
+                    .content(guestbook.getContent())
+                    .createdAt(guestbook.getCreatedAt())
+                    .comments(new ArrayList<>())
+                    .build();
+
+            // 댓글 추가
+            for (var comment : guestbook.getComments()) {
+                GuestbookCommentDto commentDto = GuestbookCommentDto.builder()
+                        .commentId(comment.getCommentId())
+                        .nickname(comment.getUser().getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .build();
+                guestbookDto.getComments().add(commentDto);
             }
+
+            guestbookDtos.add(guestbookDto);
         }
+
         return guestbookDtos;
     }
 }

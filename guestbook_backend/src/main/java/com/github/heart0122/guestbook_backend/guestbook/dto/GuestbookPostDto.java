@@ -6,9 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class GuestbookPostDto {
-    private Long id = null;
     private Long ownerId;
     private String title;
     private String content;
-    private LocalDateTime createdAt = null;
 }

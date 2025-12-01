@@ -15,7 +15,7 @@
 8. GET /api/search/{nickname} : nickname에 해당하는 유저 프로필 검색하기
 
 - guestbook
-1. GET /api/guestbook/{nickname}
+1. GET /api/guestbook/{nickname} : 해당 nickname에 해당하는 유저의 방명록 보기
 2. POST /api/guestbook : 글 작성 버튼
 3. PATCH /api/guestbook/{guestbook-id} : 글 수정 버튼
 4. DELETE /api/guestbook/{guestbook-id} : 글 삭제 버튼

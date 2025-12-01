@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @RestController
-@RequestMapping("api/guestbook")
+@RequestMapping("/api/guestbook")
 public class GuestbookController {
     private final GuestbookService guestbookService;
 
@@ -24,14 +24,14 @@ public class GuestbookController {
     }
 
     @PostMapping
-    public ResponseEntity<String> postGuestbook(GuestbookPostDto guestbookPostDto) {
+    public ResponseEntity<String> postGuestbook(@RequestBody GuestbookPostDto guestbookPostDto) {
         if(guestbookService.post(guestbookPostDto)) return new ResponseEntity<>("Post successful", HttpStatus.OK);
         else return new ResponseEntity<>("Post failed", HttpStatus.BAD_REQUEST);
     }
 
     @PatchMapping("/{guestbook-id}")
     public ResponseEntity<String> patchGuestbook(
-            @PathVariable("guestbook-id") Long guestbookId, GuestbookPatchDto guestbookPatchDto) {
+            @PathVariable("guestbook-id") Long guestbookId, @RequestBody GuestbookPatchDto guestbookPatchDto) {
         if(guestbookService.patch(guestbookId, guestbookPatchDto))
             return new ResponseEntity<>("Patch successful", HttpStatus.OK);
         else return new ResponseEntity<>("Patch failed", HttpStatus.BAD_REQUEST);

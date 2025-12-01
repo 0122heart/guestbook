@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GuestbookDto {
-    private Long id = null;
+    private Long id;
     private String ownerNickname;
     private String guestNickname;
     private String title;
     private String content;
-    private LocalDateTime createdAt = null;
+    private LocalDateTime createdAt;
     private List<GuestbookCommentDto> comments;
 }

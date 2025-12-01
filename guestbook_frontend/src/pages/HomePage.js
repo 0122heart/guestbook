@@ -18,18 +18,16 @@ function HomePage() {
     }
   }, [currentUser]);
 
-  // 현재 로그인한 사용자 정보 가져오기
   const fetchCurrentUser = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/current`, {
-        credentials: 'include' // 세션 쿠키 포함
+        credentials: 'include'
       });
       
       if (response.ok) {
         const data = await response.json();
         setCurrentUser(data);
       } else {
-        // ⭐ [수정됨] 세션이 만료되었거나 없을 경우 로컬 스토리지 정리
         console.warn('세션이 유효하지 않습니다.');
         localStorage.removeItem('isLoggedIn');
         window.location.href = '/login';
@@ -44,11 +42,12 @@ function HomePage() {
   const fetchFriends = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/friend`, {
-        credentials: 'include' // 세션 쿠키 포함
+        credentials: 'include'
       });
       
       if (response.ok) {
         const data = await response.json();
+        // FriendListDto를 직접 사용 (변환 불필요)
         setFriends(data);
       }
     } catch (error) {
@@ -62,16 +61,14 @@ function HomePage() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/user/signout`, {
         method: 'POST',
-        credentials: 'include' // 세션 쿠키 포함
+        credentials: 'include'
       });
       
-      // ⭐ [수정됨] 응답 성공 여부와 관계없이 클라이언트 로그아웃 처리
       localStorage.removeItem('isLoggedIn');
       window.location.href = '/login';
       
     } catch (error) {
       console.error('로그아웃 요청 실패:', error);
-      // 에러가 나더라도 사용자는 로그아웃 처리
       localStorage.removeItem('isLoggedIn');
       window.location.href = '/login';
     }
@@ -110,11 +107,16 @@ function HomePage() {
           ) : (
             <div className="friends-grid">
               {friends.map((friend) => (
-                <div key={friend.friendId} className="friend-card">
+                <div key={friend.userId} className="friend-card">
                   <div className="friend-avatar">
-                    {friend.nickname.charAt(0).toUpperCase()}
+                    {friend.nickname?.charAt(0).toUpperCase() || '?'}
                   </div>
                   <h3>{friend.nickname}</h3>
+                  {friend.createdAt && (
+                    <p className="friend-date">
+                      {new Date(friend.createdAt).toLocaleDateString()} 친구
+                    </p>
+                  )}
                   <button 
                     onClick={() => window.location.href = `/guestbook/${friend.nickname}`}
                     className="visit-btn"
