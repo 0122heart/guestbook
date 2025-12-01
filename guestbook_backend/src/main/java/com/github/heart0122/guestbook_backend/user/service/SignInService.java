@@ -1,6 +1,5 @@
 package com.github.heart0122.guestbook_backend.user.service;
 
-import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
 import com.github.heart0122.guestbook_backend.user.dto.SignInDto;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
@@ -17,7 +16,7 @@ import java.util.Optional;
 public class SignInService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final KeepLoginComponent keepLoginComponent;
+    private final KeepLoginService keepLoginService;
 
     public boolean signIn(SignInDto signInDto) {
         log.info("=== 로그인 시도 시작 ===");
@@ -58,19 +57,19 @@ public class SignInService {
 
         // 4단계: 세션에 저장
         log.info("KeepLoginComponent에 저장 시도");
-        keepLoginComponent.setId(user.getUserId());
-        keepLoginComponent.setNickname(user.getNickname());
+        keepLoginService.setId(user.getUserId());
+        keepLoginService.setNickname(user.getNickname());
 
         log.info("저장 완료 - ID: {}, Nickname: {}",
-                keepLoginComponent.getId(), keepLoginComponent.getNickname());
+                keepLoginService.getId(), keepLoginService.getNickname());
 
         log.info("=== 로그인 성공 ===");
         return true;
     }
 
     public boolean signOut(){
-        keepLoginComponent.setId(null);
-        keepLoginComponent.setNickname(null);
+        keepLoginService.setId(null);
+        keepLoginService.setNickname(null);
         return true;
     }
 }

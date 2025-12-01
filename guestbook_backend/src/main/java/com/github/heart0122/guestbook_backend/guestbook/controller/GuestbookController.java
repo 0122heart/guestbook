@@ -1,6 +1,6 @@
 package com.github.heart0122.guestbook_backend.guestbook.controller;
 
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookListDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.service.GuestbookService;
@@ -18,9 +18,9 @@ public class GuestbookController {
     private final GuestbookService guestbookService;
 
     @GetMapping("/{nickname}")
-    public ResponseEntity<List<GuestbookListDto>> readGuestbook(@PathVariable("nickname") String nickname) {
-        List<GuestbookListDto> guestbookListDtos = guestbookService.read(nickname);
-        return new ResponseEntity<>(guestbookListDtos, HttpStatus.OK);
+    public ResponseEntity<List<GuestbookDto>> readGuestbook(@PathVariable("nickname") String nickname) {
+        List<GuestbookDto> guestbookDtos = guestbookService.read(nickname);
+        return new ResponseEntity<>(guestbookDtos, HttpStatus.OK);
     }
 
     @PostMapping

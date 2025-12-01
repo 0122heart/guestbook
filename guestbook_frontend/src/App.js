@@ -25,6 +25,10 @@ function App() {
           element={<ProtectedRoute><HomePage /></ProtectedRoute>} 
         />
         <Route 
+          path="/profile" 
+          element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
+        />
+        <Route 
           path="/profile/:nickname" 
           element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 
         />

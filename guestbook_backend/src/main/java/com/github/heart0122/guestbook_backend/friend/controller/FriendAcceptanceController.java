@@ -1,19 +1,18 @@
 package com.github.heart0122.guestbook_backend.friend.controller;
 
 import com.github.heart0122.guestbook_backend.friend.service.FriendAcceptanceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/friend")
+@RequiredArgsConstructor
 public class FriendAcceptanceController {
-    private FriendAcceptanceService friendAcceptanceService;
+    private final FriendAcceptanceService friendAcceptanceService;
 
-    @PostMapping("/{request-id}/{accept}")
+    @GetMapping("/{request-id}/{accept}")
     public ResponseEntity<String> acceptFriendRequest(
             @PathVariable("request-id") Long requestId, @PathVariable("accept") boolean accept) {
         if(friendAcceptanceService.acceptOrReject(requestId, accept))

@@ -1,6 +1,7 @@
 package com.github.heart0122.guestbook_backend.user.controller;
 
-import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
+import com.github.heart0122.guestbook_backend.user.dto.UserDto;
+import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,17 +17,17 @@ import java.util.Map;
 @RequestMapping("/api")
 @Slf4j
 public class UserController {
-    private final KeepLoginComponent keepLoginComponent;
+    private final KeepLoginService keepLoginService;
 
     @GetMapping("/current")
     public ResponseEntity<?> getCurrentUser() {
         log.info("========== /api/current 호출 ==========");
-        log.info("keepLoginComponent hashCode: {}", System.identityHashCode(keepLoginComponent));
-        log.info("keepLoginComponent.getId(): {}", keepLoginComponent.getId());
-        log.info("keepLoginComponent.getNickname(): {}", keepLoginComponent.getNickname());
-        log.info("keepLoginComponent.isLogin(): {}", keepLoginComponent.isLogin());
+        log.info("keepLoginComponent hashCode: {}", System.identityHashCode(keepLoginService));
+        log.info("keepLoginComponent.getId(): {}", keepLoginService.getId());
+        log.info("keepLoginComponent.getNickname(): {}", keepLoginService.getNickname());
+        log.info("keepLoginComponent.isLogin(): {}", keepLoginService.isLogin());
 
-        Map<String, Object> currentUser = keepLoginComponent.getCurrentUser();
+        UserDto currentUser = keepLoginService.getCurrentUser();
         log.info("getCurrentUser 결과: {}", currentUser);
 
         if (currentUser == null) {

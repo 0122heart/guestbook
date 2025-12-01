@@ -1,12 +1,12 @@
 package com.github.heart0122.guestbook_backend.guestbook.service;
 
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentDto;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookListDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
-import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
+import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
@@ -21,13 +21,13 @@ import java.util.Optional;
 public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
-    private final KeepLoginComponent keepLoginComponent;
+    private final KeepLoginService keepLoginService;
 
     public boolean post(GuestbookPostDto guestbookPostDto){
-        if(!keepLoginComponent.isLogin()) return false;
+        if(!keepLoginService.isLogin()) return false;
 
         Optional<UserEntity> ownerOpt = userRepository.findById(guestbookPostDto.getOwnerId());
-        Optional<UserEntity> guestOpt = userRepository.findById(keepLoginComponent.getId());
+        Optional<UserEntity> guestOpt = userRepository.findById(keepLoginService.getId());
         UserEntity owner = ownerOpt.orElse(null);
         UserEntity guest = guestOpt.orElse(null);
 
@@ -67,30 +67,30 @@ public class GuestbookService {
         }
     }
 
-    public List<GuestbookListDto> read(String userNickname) {
+    public List<GuestbookDto> read(String userNickname) {
         Optional<UserEntity> userOpt = userRepository.findByNickname(userNickname);
         UserEntity userEntity = userOpt.orElse(null);
 
-        List<GuestbookListDto> guestbookListDtos = new ArrayList<>();
-        for(var ue : guestbookRepository.findGuestbookEntitiesByOwner(userEntity)){
-            GuestbookListDto guestbookListDto = new GuestbookListDto();
-            guestbookListDto.setId(ue.getGuestbookId());
-            guestbookListDto.setOwnerNickname(userEntity.getNickname());
-            guestbookListDto.setGuestNickname(ue.getGuest().getNickname());
-            guestbookListDto.setTitle(ue.getTitle());
-            guestbookListDto.setContent(ue.getContent());
-            guestbookListDto.setCreatedAt(ue.getCreatedAt());
-            guestbookListDto.setComments(new ArrayList<>());
+        List<GuestbookDto> guestbookDtos = new ArrayList<>();
+        for(var ue : guestbookRepository.findByOwner(userEntity)){
+            GuestbookDto guestbookDto = new GuestbookDto();
+            guestbookDto.setId(ue.getGuestbookId());
+            guestbookDto.setOwnerNickname(userEntity.getNickname());
+            guestbookDto.setGuestNickname(ue.getGuest().getNickname());
+            guestbookDto.setTitle(ue.getTitle());
+            guestbookDto.setContent(ue.getContent());
+            guestbookDto.setCreatedAt(ue.getCreatedAt());
+            guestbookDto.setComments(new ArrayList<>());
             for(var c : ue.getComments()){
                 GuestbookCommentDto guestbookCommentDto = new GuestbookCommentDto();
                 guestbookCommentDto.setCommentId(c.getCommentId());
                 guestbookCommentDto.setNickname(c.getUser().getNickname());
                 guestbookCommentDto.setContent(c.getContent());
                 guestbookCommentDto.setCreatedAt(c.getCreatedAt());
-                guestbookListDto.getComments().add(guestbookCommentDto);
-                guestbookListDtos.add(guestbookListDto);
+                guestbookDto.getComments().add(guestbookCommentDto);
+                guestbookDtos.add(guestbookDto);
             }
         }
-        return guestbookListDtos;
+        return guestbookDtos;
     }
 }

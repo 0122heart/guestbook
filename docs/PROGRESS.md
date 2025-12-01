@@ -34,6 +34,11 @@
 - @SessionScope를 통해 로그인 유지 구현
 - h2 db를 메모리 모드가 아닌 파일 모드로 변경
 
+<25.12.01>
+- 친구 요청 및 리스트업 BE로직 수정
+- BE수정에 맞춰서 FE 로직 수정
+- 반환을 위한 여러 DTO 생성
+
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?
@@ -44,3 +49,6 @@
 <25.11.27>
 - trouble : @SessionScope를 설정했는데도 로그인이 유지가 안된다... why?
 - solution : LoginPage.js에서 백엔드 통신 성공 후 localStorage에 해당 값을 저장하는 코드가 누락되어 있었음 => 이로 인해 서버 세션은 유효하지만, 클라이언트 라우터는 사용자를 '비로그인' 상태로 인식하여 접근을 차단 => 로그인 로직 수정
+
+<25.12.01>
+- trouble : 프론트를 잘 모르니 매번 클로드에게 의존하는 것도 힘드네.. 이번 프로젝트가 끝나면 react를 공부해봐야겠다

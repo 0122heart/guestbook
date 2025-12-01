@@ -7,8 +7,8 @@ function FriendsPage() {
   const [friends, setFriends] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [searchNickname, setSearchNickname] = useState('');
-  const [searchResult, setSearchResult] = useState(null); // 검색 결과: 사용자 정보 또는 null
-  const [searchError, setSearchError] = useState(''); // 검색 에러 메시지
+  const [searchResult, setSearchResult] = useState(null);
+  const [searchError, setSearchError] = useState('');
   const [activeTab, setActiveTab] = useState('friends');
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -72,6 +72,7 @@ function FriendsPage() {
       });
       if (response.ok) {
         const data = await response.json();
+        console.log('친구 요청 데이터:', data);
         setFriendRequests(data);
       }
     } catch (error) {
@@ -79,7 +80,6 @@ function FriendsPage() {
     }
   };
 
-  // 닉네임으로 사용자 검색
   const handleSearchUser = async (e) => {
     e.preventDefault();
     if (!searchNickname.trim()) {
@@ -88,7 +88,7 @@ function FriendsPage() {
     }
 
     try {
-      const response = await fetch(`${baseURL}/api/user/search?nickname=${encodeURIComponent(searchNickname)}`, {
+      const response = await fetch(`${baseURL}/api/search/${encodeURIComponent(searchNickname)}`, {
         credentials: 'include'
       });
       
@@ -107,7 +107,6 @@ function FriendsPage() {
     }
   };
 
-  // 프로필 페이지로 이동
   const handleViewProfile = (nickname) => {
     window.location.href = `/profile/${nickname}`;
   };
@@ -115,7 +114,7 @@ function FriendsPage() {
   const handleRequestResponse = async (requestId, accept) => {
     try {
       const response = await fetch(`${baseURL}/api/friend/${requestId}/${accept}`, {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
       });
@@ -174,7 +173,6 @@ function FriendsPage() {
             <button type="submit">검색</button>
           </form>
           
-          {/* 검색 결과 */}
           {searchResult && (
             <div className="search-result-box">
               <div className="friend-avatar">
@@ -192,7 +190,6 @@ function FriendsPage() {
             </div>
           )}
           
-          {/* 검색 에러 */}
           {searchError && (
             <div className="search-error">
               {searchError}
@@ -259,10 +256,10 @@ function FriendsPage() {
                 {friendRequests.map((request) => (
                   <div key={request.requestId} className="request-item">
                     <div className="friend-avatar">
-                      {request.senderNickname.charAt(0).toUpperCase()}
+                      {request.sender.charAt(0).toUpperCase()}
                     </div>
                     <div className="request-info">
-                      <h3>{request.senderNickname}</h3>
+                      <h3>{request.sender}</h3>
                       <p>{new Date(request.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="request-actions">

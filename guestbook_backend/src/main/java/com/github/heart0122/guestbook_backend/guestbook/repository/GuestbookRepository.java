@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface GuestbookRepository extends JpaRepository<GuestbookEntity, Long> {
-    List<GuestbookEntity> findGuestbookEntitiesByOwner(UserEntity userEntity);
+    List<GuestbookEntity> findByOwner(UserEntity userEntity);
 }

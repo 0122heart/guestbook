@@ -1,46 +1,71 @@
 .friends-container {
-  min-height: 100vh;
-  background: #f5f7fa;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .friends-header {
-  background: white;
-  padding: 20px 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .friends-header h1 {
-  color: #667eea;
   margin: 0;
+  color: #333;
 }
 
-.friends-header button {
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-info span {
+  color: #666;
+  font-size: 14px;
+}
+
+.header-info button {
   padding: 10px 20px;
-  background: #667eea;
+  background-color: #6c5ce7;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+}
+
+.header-info button:hover {
+  background-color: #5f4fd1;
+}
+
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
 }
 
 .friends-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
+/* 친구 검색 섹션 */
 .add-friend-section {
   background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .add-friend-section h2 {
+  margin-top: 0;
   margin-bottom: 20px;
   color: #333;
 }
@@ -48,6 +73,7 @@
 .add-friend-section form {
   display: flex;
   gap: 10px;
+  margin-bottom: 20px;
 }
 
 .add-friend-section input {
@@ -58,174 +84,300 @@
   font-size: 14px;
 }
 
-.add-friend-section button {
+.add-friend-section button[type="submit"] {
   padding: 12px 24px;
-  background: #667eea;
+  background-color: #6c5ce7;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
 }
 
+.add-friend-section button[type="submit"]:hover {
+  background-color: #5f4fd1;
+}
+
+/* 검색 결과 박스 */
+.search-result-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin-top: 15px;
+}
+
+.search-info {
+  flex: 1;
+}
+
+.search-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.view-profile-btn {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.view-profile-btn:hover {
+  background-color: #2980b9;
+}
+
+/* 검색 에러 */
+.search-error {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #ffe6e6;
+  color: #c0392b;
+  border-radius: 5px;
+  border: 1px solid #ffcccc;
+  font-size: 14px;
+}
+
+/* 탭 */
 .tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .tabs button {
   flex: 1;
-  padding: 15px;
-  background: white;
-  border: 2px solid #e1e4e8;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+  padding: 12px 20px;
+  background-color: transparent;
   color: #666;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
   transition: all 0.3s;
 }
 
-.tabs button.active {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
+.tabs button:hover {
+  background-color: #f0f0f0;
 }
 
+.tabs button.active {
+  background-color: #6c5ce7;
+  color: white;
+}
+
+/* 리스트 섹션 */
 .list-section {
   background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .empty-message {
   text-align: center;
   color: #999;
-  padding: 40px 0;
+  padding: 40px;
+  font-size: 16px;
 }
 
-.friends-list,
+/* 친구 목록 */
+.friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s;
+}
+
+.friend-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.friend-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.friend-info {
+  flex: 1;
+}
+
+.friend-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.friend-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.visit-btn {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.visit-btn:hover {
+  background-color: #2980b9;
+}
+
+.delete-btn {
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+/* 친구 요청 목록 */
 .requests-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.friend-item,
 .request-item {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: #f8f9fa;
+  gap: 15px;
+  padding: 15px;
+  background: #fff9e6;
   border-radius: 8px;
-  transition: transform 0.2s;
+  border: 1px solid #ffe6b3;
 }
 
-.friend-item:hover,
-.request-item:hover {
-  transform: translateY(-2px);
-}
-
-.friend-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  font-weight: bold;
-  flex-shrink: 0;
-}
-
-.friend-info,
 .request-info {
   flex: 1;
 }
 
-.friend-info h3,
 .request-info h3 {
   margin: 0 0 5px 0;
+  font-size: 16px;
   color: #333;
-  font-size: 18px;
 }
 
-.friend-info p,
 .request-info p {
   margin: 0;
-  color: #999;
   font-size: 13px;
+  color: #666;
 }
 
-.friend-actions,
 .request-actions {
   display: flex;
-  gap: 10px;
-}
-
-.friend-actions button,
-.request-actions button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s;
-}
-
-.visit-btn {
-  background: #667eea;
-  color: white;
-}
-
-.visit-btn:hover {
-  background: #5568d3;
-}
-
-.delete-btn {
-  background: #f5f7fa;
-  color: #666;
-  border: 1px solid #ddd !important;
-}
-
-.delete-btn:hover {
-  background: #e1e4e8;
+  gap: 8px;
 }
 
 .accept-btn {
-  background: #28a745;
+  padding: 8px 16px;
+  background-color: #27ae60;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .accept-btn:hover {
-  background: #218838;
+  background-color: #229954;
 }
 
 .reject-btn {
-  background: #dc3545;
+  padding: 8px 16px;
+  background-color: #95a5a6;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .reject-btn:hover {
-  background: #c82333;
+  background-color: #7f8c8d;
 }
 
+/* 반응형 디자인 */
 @media (max-width: 768px) {
+  .friends-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-info {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .add-friend-section form {
+    flex-direction: column;
+  }
+
   .friend-item,
   .request-item {
-    flex-direction: column;
-    text-align: center;
+    flex-wrap: wrap;
   }
 
   .friend-actions,
   .request-actions {
     width: 100%;
-    justify-content: center;
+    justify-content: flex-end;
+  }
+
+  .search-result-box {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .view-profile-btn {
+    width: 100%;
   }
 }

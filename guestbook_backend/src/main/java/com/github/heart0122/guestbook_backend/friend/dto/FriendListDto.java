@@ -1,4 +1,4 @@
-package com.github.heart0122.guestbook_backend.guestbook.dto;
+package com.github.heart0122.guestbook_backend.friend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class GuestbookCommentDto {
-    private Long commentId;
+@AllArgsConstructor
+@Data
+@Builder
+public class FriendListDto {
+    private Long userId;
     private String nickname;
-    private String content;
     private LocalDateTime createdAt;
 }

@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FriendListRepository extends JpaRepository<FriendListEntity, Long> {
-    List<FriendListEntity> findFriendByUser(UserEntity user);
+    List<FriendListEntity> findByUser(UserEntity user);
+    Optional<FriendListEntity> findByUserAndFriend(UserEntity user, UserEntity friend);
 }

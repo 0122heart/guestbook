@@ -4,7 +4,7 @@ import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.entity.FriendRequestEntity;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendRequestRepository;
-import com.github.heart0122.guestbook_backend.user.KeepLoginComponent;
+import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
@@ -18,10 +18,10 @@ public class FriendAcceptanceService {
     private final FriendRequestRepository friendRequestRepository;
     private final FriendListRepository friendListRepository;
     private final UserRepository userRepository;
-    private final KeepLoginComponent keepLoginComponent;
+    private final KeepLoginService keepLoginService;
 
     public boolean acceptOrReject(Long requestId, boolean accept) {
-        if(!keepLoginComponent.isLogin()) return false;
+        if(!keepLoginService.isLogin()) return false;
 
         // 친구 요청을 승인하든 거절하든 요청 객체는 삭제됨
         FriendRequestEntity friendRequest = friendRequestRepository.findById(requestId).orElse(null);
