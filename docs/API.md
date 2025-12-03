@@ -22,6 +22,7 @@
 5. POST /api/guestbook/{guestbook-id}/comment : 댓글 작성 버튼
 6. PATCH /api/guestbook/comment/{comment-id} : 댓글 수정 버튼
 7. DELETE /api/guestbook/comment/{comment-id} : 댓글 삭제 버튼
+8. GET /api/guestbook/home/feed : 친구들의 방명록 무한스크롤로 구현
 
 - friend
 1. POST /api/friend/{request-id}/{accept} : 친구 수락/거절 버튼

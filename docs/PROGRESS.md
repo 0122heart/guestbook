@@ -39,6 +39,9 @@
 - BE수정에 맞춰서 FE 로직 수정
 - 반환을 위한 여러 DTO 생성
 
+<25.12.03>
+- FE 1차 완성
+
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?
