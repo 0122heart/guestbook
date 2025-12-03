@@ -2,12 +2,14 @@ package com.github.heart0122.guestbook_backend.user.service;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentCreateDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentResponseDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.CommentEntity;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
 import com.github.heart0122.guestbook_backend.user.dto.ProfileDto;
+import com.github.heart0122.guestbook_backend.user.dto.UserDto;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +94,7 @@ public class ProfileService {
         List<GuestbookDto> guestbookDtoList = new ArrayList<>();
 
         for (var guestbookEntity : guestbookEntityList) {
-            List<GuestbookCommentDto> commentDtoList = buildCommentDtoList(guestbookEntity.getComments());
+            List<GuestbookCommentResponseDto> commentDtoList = buildCommentDtoList(guestbookEntity.getComments());
 
             GuestbookDto guestbookDto = GuestbookDto.builder()
                     .id(guestbookEntity.getGuestbookId())
@@ -115,13 +117,16 @@ public class ProfileService {
      * @param commentEntityList 댓글 엔티티 리스트
      * @return 댓글 DTO 리스트
      */
-    private List<GuestbookCommentDto> buildCommentDtoList(List<CommentEntity> commentEntityList) {
-        List<GuestbookCommentDto> commentDtoList = new ArrayList<>();
+    private List<GuestbookCommentResponseDto> buildCommentDtoList(List<CommentEntity> commentEntityList) {
+        List<GuestbookCommentResponseDto> commentDtoList = new ArrayList<>();
 
         for (var commentEntity : commentEntityList) {
-            GuestbookCommentDto commentDto = GuestbookCommentDto.builder()
+            UserDto userDto = new UserDto();
+            userDto.setId(commentEntity.getUser().getUserId());
+            userDto.setNickname(commentEntity.getUser().getNickname());
+            GuestbookCommentResponseDto commentDto = GuestbookCommentResponseDto.builder()
+                    .user(userDto)
                     .commentId(commentEntity.getCommentId())
-                    .nickname(commentEntity.getUser().getNickname())
                     .content(commentEntity.getContent())
                     .createdAt(commentEntity.getCreatedAt())
                     .build();

@@ -1,54 +1,55 @@
 package com.github.heart0122.guestbook_backend.guestbook.service;
 
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentDto;
+import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentCreateDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.CommentEntity;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.CommentRepository;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
+import com.github.heart0122.guestbook_backend.user.dto.UserDto;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
+import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
     private final CommentRepository commentRepository;
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
+    private final KeepLoginService keepLoginService;
 
-    public void addComment(Long guestbookId, GuestbookCommentDto commentDto) {
-        // 1. 방명록 조회
+    public void addComment(Long guestbookId, GuestbookCommentCreateDto commentDto) {
+        log.info("1. 방명록 조회");
         GuestbookEntity guestbook = guestbookRepository.findById(guestbookId)
                 .orElseThrow(() -> new IllegalArgumentException("방명록을 찾을 수 없습니다."));
 
-        // 2. 작성자 조회 (commentDto에 userId가 있다고 가정)
-        Optional<UserEntity> userOpt = userRepository.findByNickname(commentDto.getNickname());
-        UserEntity user = userOpt.orElse(null);
-
-        // 3. 댓글 생성 및 양방향 연관관계 설정
+        log.info("2. 댓글 생성 및 양방향 연관관계 설정");
+        UserDto userDto = keepLoginService.getCurrentUser();
+        UserEntity userEntity = userRepository.findById(userDto.getId()).orElse(null);
         CommentEntity comment = CommentEntity.builder()
                 .guestbook(guestbook)
-                .user(user)
+                .user(userEntity)
                 .content(commentDto.getContent())
                 .build();
 
-        // 4. 양쪽에 모두 설정 (중요!)
+        log.info("3. 양쪽에 모두 설정");
         guestbook.getComments().add(comment);
 
-        // 5. 저장
+        log.info("4. 저장");
         commentRepository.save(comment);
     }
 
-    public void updateComment(Long commentId, GuestbookCommentDto commentDto) {
+    public void updateComment(Long commentId, GuestbookCommentCreateDto commentDto) {
         // 1. 댓글 조회
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
         // 2. 권한 체크 (작성자만 수정 가능)
-        if (!comment.getUser().getNickname().equals(commentDto.getNickname())) {
+        if (comment.getUser().getUserId() != keepLoginService.getId()) {
             throw new IllegalArgumentException("댓글 수정 권한이 없습니다.");
         }
 

@@ -11,9 +11,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GuestbookCommentDto {
+public class GuestbookCommentCreateDto {
     private Long commentId;
-    private String nickname;
     private String content;
     private LocalDateTime createdAt;
 }

@@ -2,21 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProfilePage.css';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 function ProfilePage() {
-  const { nickname } = useParams(); // URL에서 닉네임 가져오기
-  const baseURL = 'http://localhost:8080';
-  
-  const [profile, setProfile] = useState({
-    id: null,
-    nickname: '',
-    statusMsg: '',
-    relationId: null,
-    guestbooks: []
-  });
+  const { nickname } = useParams(); // URL에서 닉네임 가져오기 (없으면 내 프로필)
   const [currentUser, setCurrentUser] = useState(null);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [targetUser, setTargetUser] = useState(null);
+  const [friends, setFriends] = useState([]);
   const [isFriend, setIsFriend] = useState(false);
-  const [friendRequestSent, setFriendRequestSent] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -25,19 +20,22 @@ function ProfilePage() {
   useEffect(() => {
     if (currentUser) {
       if (nickname) {
-        // 다른 사용자의 프로필
-        fetchUserProfile(nickname);
+        // URL에 닉네임이 있으면 해당 유저 조회
+        fetchTargetUser();
       } else {
-        // 본인 프로필
-        fetchMyProfile();
+        // URL에 닉네임이 없으면 내 프로필
+        setTargetUser(currentUser);
         setIsOwnProfile(true);
+        fetchFriends();
+        setLoading(false);
       }
     }
-  }, [currentUser, nickname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, nickname]); // fetchTargetUser를 의존성에 넣으면 무한 루프
 
   const fetchCurrentUser = async () => {
     try {
-      const response = await fetch(`${baseURL}/api/current`, {
+      const response = await fetch(`${API_BASE_URL}/api/current`, {
         credentials: 'include'
       });
       
@@ -45,7 +43,6 @@ function ProfilePage() {
         const data = await response.json();
         setCurrentUser(data);
       } else {
-        alert('로그인이 필요합니다.');
         window.location.href = '/login';
       }
     } catch (error) {
@@ -54,193 +51,202 @@ function ProfilePage() {
     }
   };
 
-  const fetchMyProfile = async () => {
+  const fetchTargetUser = async () => {
     try {
-      const response = await fetch(`${baseURL}/api/profile`, {
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/search/${encodeURIComponent(nickname)}`,
+        { credentials: 'include' }
+      );
+      
       if (response.ok) {
         const data = await response.json();
-        setProfile(data);
-        setIsOwnProfile(true);
-        setIsFriend(false);
+        setTargetUser(data);
+        
+        // 본인인지 확인
+        if (data.nickname === currentUser.nickname) {
+          setIsOwnProfile(true);
+          fetchFriends();
+        } else {
+          setIsOwnProfile(false);
+          checkFriendship();
+        }
+      } else {
+        alert('사용자를 찾을 수 없습니다.');
+        window.location.href = '/home';
       }
     } catch (error) {
-      console.error('프로필 불러오기 실패:', error);
+      console.error('사용자 정보 불러오기 실패:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchUserProfile = async (userNickname) => {
+  const checkFriendship = async () => {
     try {
-      // /api/profile/{nickname} 사용 (ProfileDto 반환)
-      const response = await fetch(`${baseURL}/api/profile/${encodeURIComponent(userNickname)}`, {
+      const response = await fetch(`${API_BASE_URL}/api/friend`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const friendsList = await response.json();
+        const isFriendCheck = friendsList.some(
+          friend => friend.nickname === nickname
+        );
+        setIsFriend(isFriendCheck);
+      }
+    } catch (error) {
+      console.error('친구 관계 확인 실패:', error);
+    }
+  };
+
+  const fetchFriends = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/friend`, {
         credentials: 'include'
       });
       
       if (response.ok) {
         const data = await response.json();
-        setProfile(data);
-        
-        // 본인 프로필인지 확인
-        setIsOwnProfile(currentUser.nickname === data.nickname);
-        
-        // 친구 관계 확인 (relationId가 있으면 친구)
-        setIsFriend(data.relationId !== null);
-      } else {
-        alert('사용자를 찾을 수 없습니다.');
-        window.location.href = '/friends';
+        setFriends(data);
       }
     } catch (error) {
-      console.error('프로필 불러오기 실패:', error);
+      console.error('친구 목록 불러오기 실패:', error);
     }
   };
 
-  const handleSendFriendRequest = async () => {
-    if (!profile.id) {
-      alert('사용자 정보를 불러올 수 없습니다.');
-      return;
-    }
+  const handleAddFriend = async () => {
+    if (!targetUser) return;
 
     try {
-      const response = await fetch(`${baseURL}/api/friend/request/${profile.id}`, {
-        method: 'POST',
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/friend/request/${targetUser.id}`,
+        {
+          method: 'POST',
+          credentials: 'include'
+        }
+      );
 
       if (response.ok) {
         alert('친구 요청을 보냈습니다!');
-        setFriendRequestSent(true);
       } else {
-        const error = await response.text();
-        alert(error || '친구 요청 전송에 실패했습니다.');
+        alert('친구 요청에 실패했습니다.');
       }
     } catch (error) {
-      console.error('친구 요청 전송 실패:', error);
-      alert('친구 요청 전송 중 오류가 발생했습니다.');
+      console.error('친구 요청 실패:', error);
+      alert('친구 요청 중 오류가 발생했습니다.');
     }
   };
 
-  if (!currentUser || !profile.nickname) {
-    return <div className="loading">로딩 중...</div>;
-  }
-
-  // 친구가 아닌 다른 사용자의 프로필 (제한된 뷰)
-  if (!isOwnProfile && !isFriend) {
+  if (loading || !targetUser || !currentUser) {
     return (
       <div className="profile-container">
-        <header className="profile-header">
-          <h1>{profile.nickname}님의 프로필</h1>
-          <button onClick={() => window.location.href = '/friends'}>뒤로가기</button>
-        </header>
-
-        <div className="profile-main">
-          <section className="profile-card limited">
-            <div className="profile-avatar large">
-              {profile.nickname.charAt(0).toUpperCase()}
-            </div>
-
-            <div className="profile-info-limited">
-              <h2>{profile.nickname}</h2>
-              <p className="status-message">
-                {profile.statusMsg || '상태 메시지가 없습니다.'}
-              </p>
-              
-              {!friendRequestSent ? (
-                <button onClick={handleSendFriendRequest} className="add-friend-btn">
-                  친구 추가
-                </button>
-              ) : (
-                <p className="request-sent">친구 요청을 보냈습니다</p>
-              )}
-            </div>
-          </section>
-        </div>
+        <div className="loading">로딩 중...</div>
       </div>
     );
   }
 
-  // 본인 프로필 또는 친구 프로필 (전체 뷰)
   return (
     <div className="profile-container">
       <header className="profile-header">
-        <h1>{isOwnProfile ? '내 프로필' : `${profile.nickname}님의 프로필`}</h1>
-        <button onClick={() => window.location.href = isOwnProfile ? '/home' : '/friends'}>
-          {isOwnProfile ? '홈으로' : '뒤로가기'}
+        <button 
+          onClick={() => window.location.href = isOwnProfile ? '/home' : '/friends'}
+          className="back-btn"
+        >
+          ← {isOwnProfile ? '홈으로' : '돌아가기'}
         </button>
+        <h1>{isOwnProfile ? '내 프로필' : `${targetUser.nickname}님의 프로필`}</h1>
       </header>
 
-      <div className="profile-main">
-        <section className="profile-card">
-          <div className="profile-avatar">
-            {profile.nickname.charAt(0).toUpperCase()}
+      <main className="profile-main">
+        {/* 프로필 정보 - 항상 표시 */}
+        <section className="profile-info-section">
+          <div className="profile-avatar-large">
+            {targetUser.nickname?.charAt(0).toUpperCase() || '?'}
           </div>
-
-          <div className="profile-info">
-            <div className="info-row">
-              <span className="label">닉네임</span>
-              <span className="value">{profile.nickname}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">상태 메시지</span>
-              <span className="value">{profile.statusMsg || '상태 메시지가 없습니다.'}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* 방명록 섹션 */}
-        {profile.guestbooks && profile.guestbooks.length > 0 && (
-          <section className="guestbook-section">
-            <h2>방명록</h2>
-            <div className="guestbook-list">
-              {profile.guestbooks.map((guestbook) => (
-                <div key={guestbook.id} className="guestbook-item">
-                  <div className="guestbook-header">
-                    <h3>{guestbook.title}</h3>
-                    <span className="guestbook-meta">
-                      {guestbook.guestNickname} → {guestbook.ownerNickname}
-                    </span>
-                  </div>
-                  <p className="guestbook-content">{guestbook.content}</p>
-                  <span className="guestbook-date">
-                    {new Date(guestbook.createdAt).toLocaleDateString()}
-                  </span>
-                  
-                  {/* 댓글 */}
-                  {guestbook.comments && guestbook.comments.length > 0 && (
-                    <div className="comments-list">
-                      {guestbook.comments.map((comment) => (
-                        <div key={comment.commentId} className="comment-item">
-                          <strong>{comment.nickname}</strong>: {comment.content}
-                          <span className="comment-date">
-                            {new Date(comment.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="actions-section">
-          <button
-            onClick={() => window.location.href = `/guestbook/${profile.nickname}`}
-            className="guestbook-btn"
-          >
-            {isOwnProfile ? '내 방명록 보기' : '방명록 보기'}
-          </button>
-          {isOwnProfile && (
-            <button
-              onClick={() => window.location.href = '/friends'}
-              className="friends-btn"
-            >
-              친구 관리
-            </button>
+          <h2>{targetUser.nickname}</h2>
+          {targetUser.statusMsg && (
+            <p className="status-message">{targetUser.statusMsg}</p>
           )}
         </section>
-      </div>
+
+        {/* 1. 본인 프로필 - 모든 정보 표시 */}
+        {isOwnProfile && (
+          <>
+            <section className="profile-actions">
+              <button 
+                onClick={() => window.location.href = `/guestbook/${currentUser.nickname}`}
+                className="action-btn primary"
+              >
+                내 방명록 보기
+              </button>
+              <button 
+                onClick={() => window.location.href = '/friends'}
+                className="action-btn"
+              >
+                친구 관리
+              </button>
+            </section>
+
+            <section className="friends-section">
+              <h3>친구 목록 ({friends.length})</h3>
+              {friends.length === 0 ? (
+                <p className="no-friends">아직 친구가 없습니다.</p>
+              ) : (
+                <div className="friends-grid">
+                  {friends.map((friend) => (
+                    <div key={friend.userId} className="friend-card">
+                      <div className="friend-avatar">
+                        {friend.nickname?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                      <h4>{friend.nickname}</h4>
+                      <button 
+                        onClick={() => window.location.href = `/guestbook/${friend.nickname}`}
+                        className="visit-btn"
+                      >
+                        방명록 보기
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
+
+        {/* 2. 친구 프로필 - 친구 정보 + 방명록 접근 */}
+        {!isOwnProfile && isFriend && (
+          <>
+            <section className="profile-actions">
+              <button 
+                onClick={() => window.location.href = `/guestbook/${targetUser.nickname}`}
+                className="action-btn primary"
+              >
+                방명록 보기
+              </button>
+            </section>
+            <section className="friend-status">
+              <p className="friend-badge">이미 친구입니다</p>
+            </section>
+          </>
+        )}
+
+        {/* 3. 친구가 아닌 사용자 - 최소 정보 + 친구 추가 */}
+        {!isOwnProfile && !isFriend && (
+          <>
+            <section className="profile-actions">
+              <button 
+                onClick={handleAddFriend}
+                className="action-btn primary"
+              >
+                친구 추가
+              </button>
+            </section>
+            <section className="not-friend-notice">
+              <p>친구가 되면 방명록을 볼 수 있습니다.</p>
+            </section>
+          </>
+        )}
+      </main>
     </div>
   );
 }

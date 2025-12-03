@@ -1,15 +1,19 @@
 package com.github.heart0122.guestbook_backend.guestbook.service;
 
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentDto;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookDto;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
+import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
+import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
+import com.github.heart0122.guestbook_backend.guestbook.dto.*;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
+import com.github.heart0122.guestbook_backend.user.dto.UserDto;
 import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
 import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,57 +21,59 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
+    private final FriendListRepository friendListRepository;
 
     @Transactional
     public boolean post(GuestbookPostDto guestbookPostDto) {
         // 로그 추가 (디버깅용)
-        System.out.println("받은 DTO: " + guestbookPostDto);
-        System.out.println("ownerId: " + guestbookPostDto.getOwnerId());
+        log.info("받은 DTO: {}", guestbookPostDto);
+        log.info("ownerId: {}", guestbookPostDto.getOwnerId());
 
         if (!keepLoginService.isLogin()) {
-            System.out.println("로그인 안 됨");
+            log.info("로그인 안 됨");
             return false;
         }
 
         Long guestId = keepLoginService.getId();
         if (guestId == null) {
-            System.out.println("guestId가 null");
+            log.info("guestId가 null");
             return false;
         }
 
         if (guestbookPostDto.getOwnerId() == null) {
-            System.out.println("ownerId가 null");
+            log.info("ownerId가 null");
             return false;
         }
 
-        System.out.println("Owner 조회 시작 - ID: " + guestbookPostDto.getOwnerId());
+        log.info("Owner 조회 시작 - ID: {}", guestbookPostDto.getOwnerId());
 
         // ownerId로 owner 찾기
         UserEntity owner = userRepository.findById(guestbookPostDto.getOwnerId())
                 .orElse(null);
 
-        System.out.println("Guest 조회 시작 - ID: " + guestId);
+        log.info("Guest 조회 시작 - ID: {}", guestId);
 
         // 작성자(guest) 찾기
         UserEntity guest = userRepository.findById(guestId).orElse(null);
 
         if (owner == null) {
-            System.out.println("owner를 찾을 수 없음");
+            log.info("owner를 찾을 수 없음");
             return false;
         }
 
         if (guest == null) {
-            System.out.println("guest를 찾을 수 없음");
+            log.info("guest를 찾을 수 없음");
             return false;
         }
 
-        System.out.println("방명록 저장 시작");
+        log.info("방명록 저장 시작");
 
         GuestbookEntity guestbook = GuestbookEntity.builder()
                 .owner(owner)
@@ -78,7 +84,7 @@ public class GuestbookService {
                 .build();
 
         guestbookRepository.save(guestbook);
-        System.out.println("방명록 저장 완료");
+        log.info("방명록 저장 완료");
         return true;
     }
 
@@ -132,9 +138,12 @@ public class GuestbookService {
 
             // 댓글 추가
             for (var comment : guestbook.getComments()) {
-                GuestbookCommentDto commentDto = GuestbookCommentDto.builder()
+                UserDto userDto = new UserDto();
+                userDto.setId(comment.getUser().getUserId());
+                userDto.setNickname(comment.getUser().getNickname());
+                GuestbookCommentResponseDto commentDto = GuestbookCommentResponseDto.builder()
+                        .user(userDto)
                         .commentId(comment.getCommentId())
-                        .nickname(comment.getUser().getNickname())
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
                         .build();
@@ -145,5 +154,36 @@ public class GuestbookService {
         }
 
         return guestbookDtos;
+    }
+
+    public Page<GuestbookDto> getFriendsGuestbookFeed(int page, int size) {
+        UserEntity user = userRepository.findById(keepLoginService.getId()).orElse(null);
+        if (user == null) return null;
+
+        List<FriendListEntity> friendList = friendListRepository.findByUser(user);
+        List<UserEntity> friend = new ArrayList<>();
+        for (FriendListEntity friendListEntity : friendList) {
+            friend.add(friendListEntity.getFriend());
+        }
+
+        // 페이지 설정
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 친구들의 방명록 조회
+        Page<GuestbookEntity> guestbooks = guestbookRepository.findByOwnerInOrderByCreatedAtDesc(friend, pageable);
+
+        // DTO로 변환
+        return guestbooks.map(this::convertToDto);
+    }
+
+    private GuestbookDto convertToDto(GuestbookEntity entity) {
+        return GuestbookDto.builder()
+                .id(entity.getGuestbookId())
+                .ownerNickname(entity.getOwner().getNickname())
+                .guestNickname(entity.getGuest().getNickname())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .createdAt(entity.getCreatedAt())
+                .build();
     }
 }

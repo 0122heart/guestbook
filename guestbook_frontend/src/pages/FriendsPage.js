@@ -111,7 +111,7 @@ function FriendsPage() {
   const handleRequestResponse = async (requestId, accept) => {
     try {
       const response = await fetch(`${baseURL}/api/friend/${requestId}/${accept}`, {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
       });

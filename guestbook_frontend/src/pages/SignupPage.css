@@ -61,6 +61,7 @@
 
 .input-button-wrapper .form-input {
   flex: 1;
+  min-width: 0; /* ⭐ flex item이 줄어들 수 있도록 */
 }
 
 /* 라벨 */
@@ -90,6 +91,7 @@
   outline: none;
   transition: all 0.3s ease;
   background-color: #f9fafb;
+  box-sizing: border-box; /* ⭐ padding 포함한 너비 계산 */
 }
 
 .form-input:focus {
@@ -161,6 +163,7 @@
   transition: all 0.3s ease;
   white-space: nowrap;
   box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0; /* ⭐ 버튼이 줄어들지 않도록 */
 }
 
 .check-button:hover {

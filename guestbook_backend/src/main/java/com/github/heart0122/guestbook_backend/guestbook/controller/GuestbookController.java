@@ -5,6 +5,8 @@ import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPatchDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookPostDto;
 import com.github.heart0122.guestbook_backend.guestbook.service.GuestbookService;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +16,23 @@ import java.util.List;
 @Data
 @RestController
 @RequestMapping("/api/guestbook")
+@Slf4j
 public class GuestbookController {
     private final GuestbookService guestbookService;
+
+    @GetMapping("/home/feed")
+    public ResponseEntity<Page<GuestbookDto>> getFeed(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<GuestbookDto> feed = guestbookService.getFriendsGuestbookFeed(page, size);
+        if(feed == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        else return ResponseEntity.status(HttpStatus.OK).body(feed);
+    }
 
     @GetMapping("/{nickname}")
     public ResponseEntity<List<GuestbookDto>> readGuestbook(@PathVariable("nickname") String nickname) {
         List<GuestbookDto> guestbookDtos = guestbookService.read(nickname);
+        log.info("==== return guestbookDtos: {} ====", guestbookDtos);
         return new ResponseEntity<>(guestbookDtos, HttpStatus.OK);
     }
 

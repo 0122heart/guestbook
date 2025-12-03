@@ -63,7 +63,7 @@ function GuestbookPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('📚 방명록 데이터:', data); // 데이터 구조 확인용
+        console.log('📚 방명록 데이터:', data);
         setGuestbookData(data);
         
         // owner ID 조회
@@ -129,7 +129,7 @@ function GuestbookPage() {
 
   // 글 수정
   const handlePostUpdate = async (postId) => {
-    console.log('🔧 수정할 postId:', postId); // 디버깅용
+    console.log('🔧 수정할 postId:', postId);
     
     if (!postId) {
       alert('글 ID를 찾을 수 없습니다.');
@@ -161,7 +161,7 @@ function GuestbookPage() {
 
   // 글 삭제
   const handlePostDelete = async (postId) => {
-    console.log('🗑️ 삭제할 postId:', postId); // 디버깅용
+    console.log('🗑️ 삭제할 postId:', postId);
     
     if (!postId) {
       alert('글 ID를 찾을 수 없습니다.');
@@ -189,7 +189,7 @@ function GuestbookPage() {
 
   // 댓글 작성
   const handleCommentSubmit = async (postId) => {
-    console.log('💬 댓글 작성 postId:', postId); // 디버깅용
+    console.log('💬 댓글 작성 postId:', postId);
     
     if (!postId) {
       alert('글 ID를 찾을 수 없습니다.');
@@ -322,9 +322,8 @@ function GuestbookPage() {
             </div>
           ) : (
             guestbookData.map((post) => {
-              // ID 필드 찾기 (guestbookId 또는 id)
               const postId = post.guestbookId || post.id;
-              console.log('📝 Post 데이터:', post, 'ID:', postId); // 디버깅용
+              console.log('📝 Post 데이터:', post, 'ID:', postId);
               
               return (
                 <div key={postId} className="post-card">
@@ -354,7 +353,7 @@ function GuestbookPage() {
                       </div>
                       <p className="post-content">{post.content}</p>
                       <div className="post-info">
-                        <span>{post.guestNickname}</span>
+                        <span>글 작성자: {post.guestNickname}</span>
                         <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                       </div>
 
@@ -376,8 +375,19 @@ function GuestbookPage() {
                               <>
                                 <p>{comment.content}</p>
                                 <div className="comment-info">
-                                  <span>{comment.nickname}</span>
-                                  <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                  <span>댓글 작성자: {comment.user?.nickname || '익명'}</span>
+                                  <span>
+                                    {comment.createdAt 
+                                      ? new Date(comment.createdAt).toLocaleDateString('ko-KR', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })
+                                      : '날짜 없음'
+                                    }
+                                  </span>
                                   <button onClick={() => setEditingComment(comment)}>수정</button>
                                   <button onClick={() => handleCommentDelete(comment.commentId)}>삭제</button>
                                 </div>
