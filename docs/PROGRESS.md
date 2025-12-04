@@ -42,6 +42,9 @@
 <25.12.03>
 - FE 1차 완성
 
+<25.12.04>
+- 친구 삭제 로직 만듦(BE)
+
 ## trouble shooting 기록
 <2025.11.20>
 - trouble : GetMapping, PostMapping, DeleteMapping은 다 할 줄 아는데 PatchMapping은 어떻게 해야하지?
