@@ -161,8 +161,8 @@ function HomePage() {
 
       <main className="feed-main">
         <div className="feed-container">
-          {guestbooks.length === 0 && !loading ? (
-            <div className="empty-feed">
+          {guestbooks.length === 0 && !loading && (
+            <div className="empty-feed" key="empty-feed">
               <h2>방명록 피드가 비어있습니다</h2>
               <p>친구를 추가하고 친구들의 방명록을 확인해보세요!</p>
               <button 
@@ -172,81 +172,64 @@ function HomePage() {
                 친구 추가하기
               </button>
             </div>
-          ) : (
-            <>
-              {guestbooks.map((guestbook, index) => {
-                if (guestbooks.length === index + 1) {
-                  return (
-                    <div 
-                      ref={lastGuestbookRef} 
-                      key={guestbook.guestbookId} 
-                      className="guestbook-card"
-                    >
-                      <GuestbookCard guestbook={guestbook} formatDate={formatDate} />
+          )}
+          
+          {guestbooks.map((guestbook, index) => {
+            const isLastElement = guestbooks.length === index + 1;
+            
+            return (
+              <div 
+                ref={isLastElement ? lastGuestbookRef : null}
+                key={guestbook.guestbookId}
+                className="guestbook-card"
+              >
+                <div className="card-header">
+                  <div className="owner-info">
+                    <div className="owner-avatar">
+                      {guestbook.ownerNickname?.charAt(0).toUpperCase() || '?'}
                     </div>
-                  );
-                } else {
-                  return (
-                    <div key={guestbook.guestbookId} className="guestbook-card">
-                      <GuestbookCard guestbook={guestbook} formatDate={formatDate} />
+                    <div>
+                      <h3 className="owner-name">{guestbook.ownerNickname}</h3>
+                      <span className="post-time">{formatDate(guestbook.createdAt)}</span>
                     </div>
-                  );
-                }
-              })}
-              
-              {loading && (
-                <div className="loading-more">
-                  <div className="spinner"></div>
-                  <p>로딩 중...</p>
+                  </div>
+                  <button 
+                    onClick={() => window.location.href = `/guestbook/${guestbook.ownerNickname}`}
+                    className="visit-guestbook-btn"
+                  >
+                    방명록 보기
+                  </button>
                 </div>
-              )}
-              
-              {!hasMore && guestbooks.length > 0 && (
-                <div className="end-of-feed">
-                  <p>모든 방명록을 확인했습니다</p>
+                
+                <div className="card-content">
+                  <h4 className="guestbook-title">{guestbook.title}</h4>
+                  <p className="guestbook-content">{guestbook.content}</p>
                 </div>
-              )}
-            </>
+                
+                <div className="card-footer">
+                  <span className="guest-author">
+                    {guestbook.guestNickname}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+          
+          {loading && (
+            <div className="loading-more" key="loading-more">
+              <div className="spinner"></div>
+              <p>로딩 중...</p>
+            </div>
+          )}
+          
+          {!hasMore && guestbooks.length > 0 && (
+            <div className="end-of-feed" key="end-of-feed">
+              <p>모든 방명록을 확인했습니다</p>
+            </div>
           )}
         </div>
       </main>
     </div>
-  );
-}
-
-// 방명록 카드 컴포넌트
-function GuestbookCard({ guestbook, formatDate }) {
-  return (
-    <>
-      <div className="card-header">
-        <div className="owner-info">
-          <div className="owner-avatar">
-            {guestbook.ownerNickname?.charAt(0).toUpperCase() || '?'}
-          </div>
-          <div>
-            <h3 className="owner-name">{guestbook.ownerNickname}</h3>
-            <span className="post-time">{formatDate(guestbook.createdAt)}</span>
-          </div>
-        </div>
-        <button 
-          onClick={() => window.location.href = `/guestbook/${guestbook.ownerNickname}`}
-          className="visit-guestbook-btn"
-        >
-          방명록 보기
-        </button>
-      </div>
-      
-      <div className="card-content">
-        <h4 className="guestbook-title">{guestbook.title}</h4>
-        <p className="guestbook-content">{guestbook.content}</p>
-      </div>
-      
-      <div className="card-footer">
-        <span className="guest-author">
-          {guestbook.guestNickname}
-        </span>
-      </div>
-    </>
   );
 }
 

@@ -2,7 +2,7 @@ package com.github.heart0122.guestbook_backend.friend.service;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.entity.FriendRequestEntity;
-import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
+import com.github.heart0122.guestbook_backend.friend.repository.FriendRepository;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendRequestRepository;
 import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Data
 @Service
 @Transactional
-public class FriendAcceptanceService {
+public class FriendManageService {
     private final FriendRequestRepository friendRequestRepository;
-    private final FriendListRepository friendListRepository;
+    private final FriendRepository friendRepository;
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
 
@@ -40,10 +40,27 @@ public class FriendAcceptanceService {
                     friend(user1).
                     build();
 
-            friendListRepository.save(connection1);
-            friendListRepository.save(connection2);
+            friendRepository.save(connection1);
+            friendRepository.save(connection2);
         }
 
         return true;
+    }
+
+    @Transactional
+    public boolean deleteFriend(Long friendId) {
+        if (!keepLoginService.isLogin()) return false;
+
+
+
+        UserEntity user1 = userRepository.findById(keepLoginService.getId()).orElse(null);
+        UserEntity user2 = userRepository.findById(friendId).orElse(null);
+
+        // 양방향 삭제
+        Long result = 0L;
+        result += friendRepository.deleteByUserAndFriend(user1, user2);
+        result += friendRepository.deleteByUserAndFriend(user2, user1);
+
+        return result == 2L;
     }
 }

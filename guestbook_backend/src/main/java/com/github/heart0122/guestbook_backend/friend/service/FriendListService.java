@@ -4,7 +4,7 @@ import com.github.heart0122.guestbook_backend.friend.dto.FriendListDto;
 import com.github.heart0122.guestbook_backend.friend.dto.FriendRequestDto;
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
 import com.github.heart0122.guestbook_backend.friend.entity.FriendRequestEntity;
-import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
+import com.github.heart0122.guestbook_backend.friend.repository.FriendRepository;
 import com.github.heart0122.guestbook_backend.friend.repository.FriendRequestRepository;
 import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import com.github.heart0122.guestbook_backend.user.entity.UserEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor  // @Data 대신 @RequiredArgsConstructor 사용
 public class FriendListService {
-    private final FriendListRepository friendListRepository;
+    private final FriendRepository friendRepository;
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
     private final FriendRequestRepository friendRequestRepository;
@@ -34,7 +34,7 @@ public class FriendListService {
             return new ArrayList<>();
         }
 
-        List<FriendListEntity> friendList = friendListRepository.findByUser(user);
+        List<FriendListEntity> friendList = friendRepository.findByUser(user);
         List<FriendListDto> result = new ArrayList<>();
 
         for (FriendListEntity f : friendList) {

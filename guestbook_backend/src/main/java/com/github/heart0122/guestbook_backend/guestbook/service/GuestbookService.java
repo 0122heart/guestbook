@@ -1,7 +1,7 @@
 package com.github.heart0122.guestbook_backend.guestbook.service;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
-import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
+import com.github.heart0122.guestbook_backend.friend.repository.FriendRepository;
 import com.github.heart0122.guestbook_backend.guestbook.dto.*;
 import com.github.heart0122.guestbook_backend.guestbook.entity.GuestbookEntity;
 import com.github.heart0122.guestbook_backend.guestbook.repository.GuestbookRepository;
@@ -28,7 +28,7 @@ public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
-    private final FriendListRepository friendListRepository;
+    private final FriendRepository friendRepository;
 
     @Transactional
     public boolean post(GuestbookPostDto guestbookPostDto) {
@@ -160,7 +160,7 @@ public class GuestbookService {
         UserEntity user = userRepository.findById(keepLoginService.getId()).orElse(null);
         if (user == null) return null;
 
-        List<FriendListEntity> friendList = friendListRepository.findByUser(user);
+        List<FriendListEntity> friendList = friendRepository.findByUser(user);
         List<UserEntity> friend = new ArrayList<>();
         for (FriendListEntity friendListEntity : friendList) {
             friend.add(friendListEntity.getFriend());

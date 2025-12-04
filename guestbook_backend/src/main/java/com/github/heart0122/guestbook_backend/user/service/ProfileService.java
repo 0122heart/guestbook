@@ -1,8 +1,7 @@
 package com.github.heart0122.guestbook_backend.user.service;
 
 import com.github.heart0122.guestbook_backend.friend.entity.FriendListEntity;
-import com.github.heart0122.guestbook_backend.friend.repository.FriendListRepository;
-import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentCreateDto;
+import com.github.heart0122.guestbook_backend.friend.repository.FriendRepository;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookCommentResponseDto;
 import com.github.heart0122.guestbook_backend.guestbook.dto.GuestbookDto;
 import com.github.heart0122.guestbook_backend.guestbook.entity.CommentEntity;
@@ -22,7 +21,7 @@ import java.util.List;
 @Service
 public class ProfileService {
     private final UserRepository userRepository;
-    private final FriendListRepository friendListRepository;
+    private final FriendRepository friendRepository;
     private final KeepLoginService keepLoginService;
     private final GuestbookRepository guestbookRepository;
 
@@ -68,7 +67,7 @@ public class ProfileService {
 
         String currentNickname = keepLoginService.getNickname();
         UserEntity currentUser = userRepository.findByNickname(currentNickname).orElse(null);
-        FriendListEntity friendListEntity = friendListRepository.findByUserAndFriend(currentUser, targetUser).orElse(null);
+        FriendListEntity friendListEntity = friendRepository.findByUserAndFriend(currentUser, targetUser).orElse(null);
 
         if (friendListEntity == null) {
             // 친구가 아닌 경우: 기본 정보만

@@ -1,7 +1,3 @@
-
-
-
-
 ## 백엔드 API
 
 - user
@@ -29,3 +25,4 @@
 2. GET /api/friend : 로그인 한 유저의 친구목록 보기 버튼
 3. GET /api/friend/request : 로그인 한 유저가 받은 친구 요청 목록 보기 버튼
 4. POST /api/friend/request/{receiver} : 친구 요청 버튼
+5. DELETE /api/friend/{friend-id} : 친구 삭제 버튼
