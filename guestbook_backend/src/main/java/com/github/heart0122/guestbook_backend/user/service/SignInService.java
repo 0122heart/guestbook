@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -67,6 +68,7 @@ public class SignInService {
         return true;
     }
 
+    @Transactional
     public boolean signOut(){
         keepLoginService.setId(null);
         keepLoginService.setNickname(null);

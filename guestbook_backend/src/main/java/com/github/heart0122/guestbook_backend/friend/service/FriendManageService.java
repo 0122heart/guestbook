@@ -20,6 +20,7 @@ public class FriendManageService {
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
 
+    @Transactional
     public boolean acceptOrReject(Long requestId, boolean accept) {
         if(!keepLoginService.isLogin()) return false;
 

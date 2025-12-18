@@ -6,6 +6,7 @@ import com.github.heart0122.guestbook_backend.user.repository.UserRepository;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Data
 @Service
@@ -13,6 +14,7 @@ public class SignUpService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public boolean signUp(SignUpDto signUpDto) {
         // 아이디, 이메일, 닉네임이 null이 아닌지 확인
         if(signUpDto.getLoginId() == null ||

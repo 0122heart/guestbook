@@ -12,6 +12,7 @@ import com.github.heart0122.guestbook_backend.user.service.KeepLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final KeepLoginService keepLoginService;
 
+    @Transactional
     public void addComment(Long guestbookId, GuestbookCommentCreateDto commentDto) {
         log.info("1. 방명록 조회");
         GuestbookEntity guestbook = guestbookRepository.findById(guestbookId)
@@ -43,6 +45,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void updateComment(Long commentId, GuestbookCommentCreateDto commentDto) {
         // 1. 댓글 조회
         CommentEntity comment = commentRepository.findById(commentId)
@@ -58,6 +61,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         // 1. 댓글 조회
         CommentEntity comment = commentRepository.findById(commentId)

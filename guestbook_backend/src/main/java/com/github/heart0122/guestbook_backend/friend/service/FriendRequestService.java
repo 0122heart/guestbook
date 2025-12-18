@@ -20,6 +20,7 @@ public class FriendRequestService {
     private final UserRepository userRepository;
     private final FriendRequestRepository friendRequestRepository;
 
+    @Transactional
     public boolean request(Long receiverId){
         if(!keepLoginService.isLogin()) return false;
 
